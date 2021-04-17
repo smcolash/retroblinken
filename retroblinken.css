@@ -2,6 +2,16 @@ body {
   background-color: #212121;
   font-family: sans-serif;
   color: lightgray;
+  padding: 8px;
+}
+
+fieldset {
+    border-width: 2px;
+    border-style: groove;
+    border-color: threedface;
+    border-image: initial;
+    padding: inherit;
+    margin: inherit;
 }
 
 label {
