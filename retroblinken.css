@@ -40,8 +40,86 @@ table.switches > tbody > tr > td {
     transition: opacity 0.1s ease-in-out;
     background: radial-gradient(#ff6060, #cf1010);
     opacity: 0.2;
-
 }
+
+
+.control {
+}
+
+.label {
+    font-weight: bold;
+    width: 24pt;
+    text-align: center;
+    /*
+    display: table-cell;
+    vertical-align: middle;
+    */
+}
+
+.new_led {
+    width: 24pt;
+    height: 24pt;
+    border-radius: 4pt;
+    margin-top: 8pt;
+    margin-bottom: 8pt;
+    transition: opacity 0.1s ease-in-out;
+    background: radial-gradient(#ff6060, #cf1010);
+    opacity: 0.2;
+}
+
+.switch {
+    width: 24pt;
+    height: 40pt;
+    border-radius: 4pt;
+    margin-top: 8pt;
+    margin-bottom: 8pt;
+    background-color: gray;
+}
+
+.slider {
+    position: relative;
+    top: 4pt;
+    top: 20pt;
+    width: 16pt;
+    height: 16pt;
+    border-radius: 4pt;
+    margin: 4pt;
+    background-color: #424242;
+    transition: all 0.1s ease-in-out;
+}
+
+.toggle {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.toggle input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+}
+
+.toggle input:checked ~ .switch .slider {
+    top: 4pt;
+}
+
+
+
+
+
+
+
+
+
+
 
 .red {
     background: radial-gradient(#ff6060, #cf1010);
