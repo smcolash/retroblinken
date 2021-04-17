@@ -193,7 +193,7 @@ window.onload = function () {
       address.value = Math.trunc (Math.random () * 2**14);
       count = 16 + Math.random () * 16;
     }
-  }, 500);
+  }, 250);
 
 
 
