@@ -208,4 +208,20 @@ window.onload = function () {
 
 
 
+$('.bit .toggle input').on ('change', function () {
+    let input = $(this);
+    let led = $(this).parent ().parent ().find ('div.new_led');
+
+    if (input[0].checked) {
+        led.addClass ('on');
+    }
+    else {
+        led.removeClass ('on');
+    }
+});
+
+
+
+
+
 }
