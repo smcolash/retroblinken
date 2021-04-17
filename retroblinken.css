@@ -57,9 +57,8 @@ table.switches > tbody > tr > td {
     background: radial-gradient(#60ff60, #108f10);
 }
 
-.container {
-  padding: 0px;
-  width: 200px;
+.outline {
+    border: 1px solid red;
 }
 
 /* -------------------------------------------------- */
