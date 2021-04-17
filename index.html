@@ -355,6 +355,15 @@ window.onload = function () {
 
 
 
+    function speak (text) {
+        try {
+            var utterance = new SpeechSynthesisUtterance (text);
+            window.speechSynthesis.speak (utterance);
+        }
+        catch {
+        }
+    }
+
 
 
 }
