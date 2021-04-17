@@ -1,0 +1,748 @@
+<html>
+
+
+    <head>
+
+<style>
+
+body {
+  background-color: #212121;
+  font-family: sans-serif;
+  color: lightgray;
+}
+
+label {
+    user-select: none;
+}
+
+
+table.switches > thead > tr > th {
+    font-size: 14px;
+    text-align: center;
+    user-select: none;
+}
+
+table.switches > tbody > tr > td {
+    text-align: center;
+    padding: 4px;
+}
+
+.on {
+    opacity: 1.0 !important;
+}
+
+.led {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    margin: 0 auto;
+    transition: opacity 0.1s ease-in-out;
+    background: radial-gradient(#ff6060, #cf1010);
+    opacity: 0.2;
+
+}
+
+.red {
+    background: radial-gradient(#ff6060, #cf1010);
+}
+
+.orange {
+    background: radial-gradient(#ff8000, #804000);
+}
+
+.green {
+    background: radial-gradient(#60ff60, #108f10);
+}
+
+.container {
+  padding: 0px;
+  width: 200px;
+}
+
+/* -------------------------------------------------- */
+
+.switch-box {
+    width: 32px;
+}
+
+.switch-label {
+    font-size: 12px;
+    color: white;
+    font-weight: bold;
+}
+
+.toggle-switch-container {
+    align-content: center;
+}
+
+.toggle-switch {
+    margin: 0;
+}
+
+.toggle-switch {
+    width: 10px;
+    position: relative;
+}
+
+.toggle-switch input {
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.toggle-switch input:checked {
+    z-index: 1;
+}
+
+.toggle-switch input:checked + label {
+    opacity: 1;
+    cursor: default;
+}
+
+.toggle-switch .toggle-outside {
+    border-radius: 4px;
+    padding: 11px;
+    transition: opacity 0.1s ease-in-out;
+}
+
+.toggle-switch .toggle-inside {
+    border-radius: 4px;
+    background: #424242;
+    position: absolute;
+    transition: all 0.1s ease-in-out;
+}
+
+.switch-vertical {
+    width: 0px;
+    height: 45px;
+    margin-left: 24px;
+}
+
+.switch-vertical input {
+    height: 100%;
+    width: 24px;
+    right: 0;
+    margin: 0;
+}
+
+.switch-vertical .toggle-outside {
+    background: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    width: 24px;
+    height: 100%;
+    right: 0;
+    top: 0;
+    box-sizing: border-box;
+}
+
+.switch-vertical .toggle-inside {
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    top: 3px;
+}
+
+.switch-vertical input:checked ~ .toggle-outside .toggle-inside {
+    _top: 3px;
+}
+
+.switch-vertical input ~ input:checked ~ .toggle-outside .toggle-inside {
+    top: 24px;
+}
+
+</style>
+
+<script>
+
+class Switch {
+  constructor (name, callback, led = null) {
+    this._name = name;
+    this._callback = callback;
+    this._value = false;
+    this._led = null;
+
+    self = this;
+
+    if (led) {
+      this._led = document.getElementById (led);
+    }
+
+    this._on = document.getElementById (name + '1');
+    this._off = document.getElementById (name + '2');
+
+    this._on.addEventListener ('change', function () {
+      self._value = true;
+      self.display ();
+      self._callback (self);
+
+      return;
+
+      setTimeout (function () {
+        self._value = false;
+        self.display ();
+        self._on.checked = false;
+        self._off.checked = true;
+      }, 100);
+    });
+  }
+
+  display () {
+    console.log (this);
+    console.log (self);
+    if (this._value) {
+      this._led.classList.add ('on');
+    }
+    else {
+      this._led.classList.remove ('on');
+    }
+  }
+}
+
+
+class Bus {
+  constructor (width, leds = null, switches = null) {
+    this._mask = (2**width) - 1;
+    this._outputs = {};
+    this._value = 0;
+    this._enabled = false;
+    this._listener = null;
+
+    var self = this;
+
+    if (leds) {
+      document.querySelectorAll (leds).forEach (function (e) {
+        self._outputs[parseInt (e.dataset.value)] = {'id': e.id, 'element': e};
+      });
+    }
+
+    if (switches) {
+      document.querySelectorAll (switches).forEach (function (e) {
+        e.addEventListener ('change', function (event) {
+          if (!self._enabled) {
+            return;
+          }
+
+          let value = 0;
+          if ('value' in this.dataset) {
+            value = parseInt (this.dataset.value);
+          }
+
+          let led = document.getElementById (this.name);
+
+          if (value) {
+            led.classList.add ('on');
+            address.value = address.value | value;
+          }
+          else {
+            led.classList.remove ('on');
+            address.value = address.value ^ value;
+          }
+
+          console.log (address.value);
+        });
+      });
+    }
+  }
+
+  set value (x) {
+    this._value = x & this._mask;
+    this.display ();
+
+    if (this._listener) {
+      this._listener (x);
+    }
+  }
+
+  get value () {
+    return (this._value);
+  }
+
+  enabled (flag) {
+    this._enabled = flag;
+  }
+
+  display () {
+    for (let key in this._outputs) {
+      if (this._value & key) {
+        this._outputs[key].element.classList.add ('on');
+      }
+      else {
+        this._outputs[key].element.classList.remove ('on');
+      }
+    }
+  }
+
+  registerListener (listener) {
+    this._listener = listener;
+  }
+}
+
+window.onload = function () {
+  //
+  // initialize the system memory
+  //
+  var memory = new Array (2**16);
+  for (let loop = 0; loop < 2**16; loop++) {
+    //memory[loop] = loop & 0xff;
+    memory[loop] = Math.trunc (Math.random () * 255);
+  }
+
+  //
+  // represent the address bus as an index to the memory array
+  //
+  var address = new Bus (16,
+        'tr.address.outputs > td > div.led',
+        'tr.address.inputs > td > div > input');
+
+  //
+  // use data bus as a simple value for now
+  //
+  var data = new Bus (8,
+        'tr.data.outputs > td > div.led',
+        'tr.data.inputs > td > div > input');
+
+  address.enabled (false);
+  data.enabled (false);
+
+  let en = new Switch ('EN',
+        function () {},
+        'C5');
+  let dn = new Switch ('DN',
+        function () {},
+        'C4');
+  let rst = new Switch ('RST',
+        function () {},
+        'C3');
+
+  console.log (en);
+  console.log (dn);
+  console.log (rst);
+/*
+  let ss = new Switch ('SS', function () {console.log (this);}, 'C0');
+  */
+
+  count = 16 + Math.random () * 16;
+  address.value = 0;
+
+  setInterval (function () {
+    let power = document.getElementById ("ON1").checked;
+    if (!power) {
+      address.value = 0;
+      data.value = 0;
+      return;
+    }
+
+    let run = document.getElementById ("RS").checked;
+    if (!run) {
+      address.enabled (true);
+      data.enabled (true);
+      return;
+    }
+
+    address.enabled (false);
+    data.enabled (false);
+
+    data.value = memory[address.value++];
+    count--
+
+    if (count < 1) {
+      address.value = Math.trunc (Math.random () * 2**14);
+      count = 16 + Math.random () * 16;
+    }
+  }, 500);
+
+
+
+
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+  <fieldset style="width: fit-content; margin-bottom: 16px;">
+    <label>Address Bus</label>
+    <table class='switches'>
+      <thead>
+        <tr>
+          <th>A15</th>
+          <th>A14</th>
+          <th>A13</th>
+          <th>A12</th>
+          <th>A11</th>
+          <th>A10</th>
+          <th>A9</th>
+          <th>A8</th>
+          <th>A7</th>
+          <th>A6</th>
+          <th>A5</th>
+          <th>A4</th>
+          <th>A3</th>
+          <th>A2</th>
+          <th>A1</th>
+          <th>A0</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="address outputs">
+          <td><div id='A15' data-value=32768 class="led green"></div></td>
+          <td><div id='A14' data-value=16384 class="led green"></div></td>
+          <td><div id='A13' data-value=8192 class="led green"></div></td>
+          <td><div id='A12' data-value=4096 class="led green"></div></td>
+          <td><div id='A11' data-value=2048 class="led green"></div></td>
+          <td><div id='A10' data-value=1024 class="led green"></div></td>
+          <td><div id='A9' data-value=512 class="led green"></div></td>
+          <td><div id='A8' data-value=256 class="led green"></div></td>
+          <td><div id='A7' data-value=128 class="led green"></div></td>
+          <td><div id='A6' data-value=64 class="led green"></div></td>
+          <td><div id='A5' data-value=32 class="led green"></div></td>
+          <td><div id='A4' data-value=16 class="led green"></div></td>
+          <td><div id='A3' data-value=8 class="led green"></div></td>
+          <td><div id='A2' data-value=4 class="led green"></div></td>
+          <td><div id='A1' data-value=2 class="led green"></div></td>
+          <td><div id='A0' data-value=1 class="led green"></div></td>
+        </tr>
+        <tr class="address inputs">
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=32768 type="radio" name="A15" />
+              <input type="radio" name="A15" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=16384 type="radio" name="A14" />
+              <input type="radio" name="A14" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=8192 type="radio" name="A13" />
+              <input type="radio" name="A13" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=4096 type="radio" name="A12" />
+              <input type="radio" name="A12" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=2048 type="radio" name="A11" />
+              <input type="radio" name="A11" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=1024 type="radio" name="A10" />
+              <input type="radio" name="A10" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=512 type="radio" name="A9" />
+              <input type="radio" name="A9" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=256 type="radio" name="A8" />
+              <input type="radio" name="A8" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=128 type="radio" name="A7" />
+              <input type="radio" name="A7" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=64 type="radio" name="A6" />
+              <input type="radio" name="A6" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=32 type="radio" name="A5" />
+              <input type="radio" name="A5" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=16 type="radio" name="A4" />
+              <input type="radio" name="A4" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=8 type="radio" name="A3" />
+              <input type="radio" name="A3" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=4 type="radio" name="A2" />
+              <input type="radio" name="A2" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=2 type="radio" name="A1" />
+              <input type="radio" name="A1" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=1 type="radio" name="A0" />
+              <input type="radio" name="A0" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </fieldset>
+
+  <fieldset style="width: fit-content; display: inline-block; margin-bottom: 16px;">
+    <label>Data Bus</label>
+    <table class='switches'>
+      <thead>
+        <tr>
+          <th>D7</th>
+          <th>D6</th>
+          <th>D5</th>
+          <th>D4</th>
+          <th>D3</th>
+          <th>D2</th>
+          <th>D1</th>
+          <th>D0</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="data outputs">
+          <td><div id='D7' data-value=128 class="led orange"></div></td>
+          <td><div id='D6' data-value=64 class="led orange"></div></td>
+          <td><div id='D5' data-value=32 class="led orange"></div></td>
+          <td><div id='D4' data-value=16 class="led orange"></div></td>
+          <td><div id='D3' data-value=8 class="led orange"></div></td>
+          <td><div id='D2' data-value=4 class="led orange"></div></td>
+          <td><div id='D1' data-value=2 class="led orange"></div></td>
+          <td><div id='D0' data-value=1 class="led orange"></div></td>
+        </tr>
+        <tr class="data inputs">
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=128 type="radio" name="D7" />
+              <input type="radio" name="D7" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=64 type="radio" name="D6" />
+              <input type="radio" name="D6" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=32 type="radio" name="D5" />
+              <input type="radio" name="D5" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=16 type="radio" name="D4" />
+              <input type="radio" name="D4" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=8 type="radio" name="D3" />
+              <input type="radio" name="D3" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=4 type="radio" name="D2" />
+              <input type="radio" name="D2" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=2 type="radio" name="D1" />
+              <input type="radio" name="D1" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input data-value=1 type="radio" name="D0" />
+              <input type="radio" name="D0" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </fieldset>
+
+  <fieldset style="width: fit-content; display: inline-block; margin-bottom: 16px;">
+    <label>Controls</label>
+    <table class='switches'>
+      <thead>
+        <tr>
+          <th>E/N</th>
+          <th>D/N</th>
+          <th>RST</th>
+          <th>R/S</th>
+          <th>SS</th>
+          <th>PWR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="control outputs">
+          <td><div id='C5' data-value=32 class="led red"></div></td>
+          <td><div id='C4' data-value=16 class="led red"></div></td>
+          <td><div id='C3' data-value=8 class="led red"></div></td>
+          <td><div id='C2' data-value=4 class="led red"></div></td>
+          <td><div id='C1' data-value=2 class="led red"></div></td>
+          <td><div id='C0' data-value=1 class="led red"></div></td>
+        </tr>
+        <tr class="control inputs">
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input id="EN1" data-value=128 type="radio" name="EN" />
+              <input id="EN2" type="radio" name="EN" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input id="DN1" data-value=32 type="radio" name="DN" />
+              <input id="DN2" type="radio" name="DN" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input id="RST1" data-value=16 type="radio" name="RST" />
+              <input id="RST2" type="radio" name="RST" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input id="RS" data-value=64 type="radio" name="RS" />
+              <input type="radio" name="RS" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input id="SS1" data-value=32 type="radio" name="SS" />
+              <input id="SS2" type="radio" name="SS" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="toggle-switch switch-vertical">
+              <input id="ON1" data-value=8 type="radio" name="ON" />
+              <input id="ON2" type="radio" name="ON" checked="checked" />
+              <span class="toggle-outside">
+                <span class="toggle-inside"></span>
+              </span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </fieldset>
+
+</body>
+
+</html>
