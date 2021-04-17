@@ -1,0 +1,146 @@
+body {
+  background-color: #212121;
+  font-family: sans-serif;
+  color: lightgray;
+}
+
+label {
+    user-select: none;
+}
+
+
+table.switches > thead > tr > th {
+    font-size: 14px;
+    text-align: center;
+    user-select: none;
+}
+
+table.switches > tbody > tr > td {
+    text-align: center;
+    padding: 4px;
+}
+
+.on {
+    opacity: 1.0 !important;
+}
+
+.led {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    margin: 0 auto;
+    transition: opacity 0.1s ease-in-out;
+    background: radial-gradient(#ff6060, #cf1010);
+    opacity: 0.2;
+
+}
+
+.red {
+    background: radial-gradient(#ff6060, #cf1010);
+}
+
+.orange {
+    background: radial-gradient(#ff8000, #804000);
+}
+
+.green {
+    background: radial-gradient(#60ff60, #108f10);
+}
+
+.container {
+  padding: 0px;
+  width: 200px;
+}
+
+/* -------------------------------------------------- */
+
+.switch-box {
+    width: 32px;
+}
+
+.switch-label {
+    font-size: 12px;
+    color: white;
+    font-weight: bold;
+}
+
+.toggle-switch-container {
+    align-content: center;
+}
+
+.toggle-switch {
+    margin: 0;
+}
+
+.toggle-switch {
+    width: 10px;
+    position: relative;
+}
+
+.toggle-switch input {
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.toggle-switch input:checked {
+    z-index: 1;
+}
+
+.toggle-switch input:checked + label {
+    opacity: 1;
+    cursor: default;
+}
+
+.toggle-switch .toggle-outside {
+    border-radius: 4px;
+    padding: 11px;
+    transition: opacity 0.1s ease-in-out;
+}
+
+.toggle-switch .toggle-inside {
+    border-radius: 4px;
+    background: #424242;
+    position: absolute;
+    transition: all 0.1s ease-in-out;
+}
+
+.switch-vertical {
+    width: 0px;
+    height: 45px;
+    margin-left: 24px;
+}
+
+.switch-vertical input {
+    height: 100%;
+    width: 24px;
+    right: 0;
+    margin: 0;
+}
+
+.switch-vertical .toggle-outside {
+    background: rgba(255, 255, 255, 0.5);
+    position: absolute;
+    width: 24px;
+    height: 100%;
+    right: 0;
+    top: 0;
+    box-sizing: border-box;
+}
+
+.switch-vertical .toggle-inside {
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    top: 3px;
+}
+
+.switch-vertical input:checked ~ .toggle-outside .toggle-inside {
+    _top: 3px;
+}
+
+.switch-vertical input ~ input:checked ~ .toggle-outside .toggle-inside {
+    top: 24px;
+}
