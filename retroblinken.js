@@ -123,6 +123,15 @@ class Bus {
 
 window.onload = function () {
   //
+  // create global system registers
+  //
+  var global = {};
+  global['address'] = {'enabled': true, 'value': 0x0000, 'mask': 0xffff};
+  global['data'] = {'enabled': true, 'value': 0x00, 'mask': 0xff};;
+  global['control'] = {'enabled': true, 'value': 0x00, 'mask': 0xff};;
+  global['power'] = {'enabled': true, 'value': 0, 'mask': 1};;
+
+  //
   // initialize the system memory
   //
   var memory = new Array (2**16);
@@ -207,21 +216,39 @@ window.onload = function () {
     }
 
 
+    $('.bit .toggle input').on ('change', function () {
+        let input = $(this);
+        let toggle = input.parent ();
+        let data = toggle.data ();
 
-$('.bit .toggle input').on ('change', function () {
-    let input = $(this);
-    let led = $(this).parent ().parent ().find ('div.new_led');
+        if (!global[data.name].enabled) {
+            return;
+        }
 
-    if (input[0].checked) {
-        led.addClass ('on');
-    }
-    else {
-        led.removeClass ('on');
-    }
-});
+        if (input[0].checked) {
+            global[data.name]['value'] = global[data.name]['value'] | (2 ** data.bit);
 
+            if (toggle.hasClass ('temporary')) {
+                setTimeout (function () {
+                    input[0].click ();
+                }, 100);
+            }
+        }
+        else {
+            global[data.name]['value'] = global[data.name]['value'] & (global[data.name]['mask'] ^ (2 ** data.bit));
+        }
 
+        console.log (global[data.name]);
 
+        $('.led[data-name="' + data.name + '"][data-bit=' + data.bit + ']').each (function (index, element) {
+            let led = $(element);
 
-
+            if (input[0].checked) {
+                led.addClass ('on');
+            }
+            else {
+                led.removeClass ('on');
+            }
+        });
+    });
 }

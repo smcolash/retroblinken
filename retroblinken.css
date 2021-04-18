@@ -32,7 +32,7 @@ table.switches > tbody > tr > td {
     opacity: 1.0 !important;
 }
 
-.led {
+.old_led {
     width: 24px;
     height: 24px;
     border-radius: 4px;
@@ -56,7 +56,7 @@ table.switches > tbody > tr > td {
     */
 }
 
-.new_led {
+.led {
     width: 24pt;
     height: 24pt;
     border-radius: 4pt;
