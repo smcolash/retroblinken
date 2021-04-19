@@ -6,6 +6,9 @@ class PanelControl {
         this._mask = mask;
     }
 
+    //
+    // use the setter method to update the LEDs
+    //
     set value (x) {
         this._value = x & this._mask;
         this.display ();
@@ -23,6 +26,9 @@ class PanelControl {
         return (this._enabled);
     }
 
+    //
+    // update the LEDs to display the current value
+    //
     display () {
         let self = this;
 
@@ -39,6 +45,9 @@ class PanelControl {
         });
     }
 
+    //
+    // update the data and LEDs based on the current switch settings
+    //
     update () {
         let self = this;
         let temp = self.value;
@@ -91,6 +100,9 @@ window.onload = function () {
     global['address'].value = 0;
     global['data'].value = 0;
 
+    //
+    // saving this for later
+    //
     function speak (text) {
         try {
             var utterance = new SpeechSynthesisUtterance (text);
@@ -100,7 +112,14 @@ window.onload = function () {
         }
     }
 
+    //
+    // execute the currently addressed instruction
+    //
     function execute (g, m) {
+        if (global['power'].value == 0) {
+            return;
+        }
+
         global['address'].value++;
         global['data'].value = memory[global['address'].value];
 
@@ -115,6 +134,9 @@ window.onload = function () {
         }
     }
 
+    //
+    // handle a change to the power switch
+    //
     $('#power').on ('change', function () {
         let power = $(this);
 
@@ -137,10 +159,19 @@ window.onload = function () {
         }
     });
 
+    //
+    // handle the change to run/stop
+    //
     $('#run_stop').on ('change', function () {
-        execute (global, memory);
+        let input = $(this);
+        if (input.is (':checked')) {
+            execute (global, memory);
+        }
     })
 
+    //
+    // handle a request to step one address
+    //
     $('#single_step').on ('change', function () {
         if (global['power'].value == 0) {
             return;
@@ -152,6 +183,9 @@ window.onload = function () {
         }
     });
 
+    //
+    // handle a change to the reset signal
+    //
     $('#reset').on ('change', function () {
         if (global['power'].value == 0) {
             return;
@@ -164,6 +198,9 @@ window.onload = function () {
         }
     });
 
+    //
+    // dispatch switch events to the appropriate handlers
+    //
     $('.bit .toggle input').on ('change', function () {
         let input = $(this);
         let name = input.data ()['name'];
