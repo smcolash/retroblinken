@@ -126,9 +126,9 @@ window.onload = function () {
   // create global system registers
   //
   var global = {};
-  global['address'] = {'enabled': true, 'value': 0x0000, 'mask': 0xffff};
-  global['data'] = {'enabled': true, 'value': 0x00, 'mask': 0xff};;
-  global['control'] = {'enabled': true, 'value': 0x00, 'mask': 0xff};;
+  global['address'] = {'enabled': false, 'value': 0x0000, 'mask': 0xffff};
+  global['data'] = {'enabled': false, 'value': 0x00, 'mask': 0xff};;
+  global['control'] = {'enabled': false, 'value': 0x00, 'mask': 0xff};;
   global['power'] = {'enabled': true, 'value': 0, 'mask': 1};;
 
   //
@@ -215,40 +215,95 @@ window.onload = function () {
         }
     }
 
+    $('#power').on ('change', function () {
+        let power = $(this);
 
-    $('.bit .toggle input').on ('change', function () {
-        let input = $(this);
-        let toggle = input.parent ();
-        let data = toggle.data ();
-
-        if (!global[data.name].enabled) {
-            return;
+        for (let item in global) {
+            global[item].enabled = power.is (':checked');
         }
 
-        if (input[0].checked) {
-            global[data.name]['value'] = global[data.name]['value'] | (2 ** data.bit);
+        global['power'].enabled = true;
 
-            if (toggle.hasClass ('temporary')) {
-                setTimeout (function () {
-                    input[0].click ();
-                }, 100);
-            }
+        if (!power.is (':checked')) {
+            $('.led').each (function (index, element) {
+                $(element).removeClass ('on');
+            });
+
+            global['address']['value'] = 0;
+            global['data']['value'] = 0;
         }
         else {
-            global[data.name]['value'] = global[data.name]['value'] & (global[data.name]['mask'] ^ (2 ** data.bit));
+            update_input ('address');
+            update_output ('address');
+            update_input ('data');
+            update_output ('data');
         }
 
-        console.log (global[data.name]);
+        console.log (global);
+    });
 
-        $('.led[data-name="' + data.name + '"][data-bit=' + data.bit + ']').each (function (index, element) {
+    $('#single_step').on ('change', function () {
+        let input = $(this);
+        if (!input.is (':checked')) {
+            global['address']['value']++;
+            update_output ('address');
+        }
+    });
+
+    $('#reset').on ('change', function () {
+        let input = $(this);
+        if (!input.is (':checked')) {
+            global['address']['value'] = 0;
+            update_output ('address');
+        }
+    });
+
+
+
+    function update_input (name) {
+        $('.bit .toggle input[data-name="' + name + '"]').each (function (index, element) {
+            let input = $(element);
+            let data = input.data ();
+            let control = global[name];
+
+            if (input.is (':checked')) {
+                if (control.enabled == true) {
+                    control['value'] = control['value'] | (2 ** data.bit);
+                }
+
+                if (input.hasClass ('temporary')) {
+                    setTimeout (function () {
+                        input[0].click ();
+                    }, 100);
+                }
+            }
+            else {
+                if (control.enabled == true) {
+                    control['value'] = control['value'] & (control['mask'] ^ (2 ** data.bit));
+                }
+            }
+        });
+
+        console.log (global[name]);
+    }
+
+    function update_output (name) {
+        $('.led[data-name="' + name + '"]').each (function (index, element) {
             let led = $(element);
+            let data = led.data ();
 
-            if (input[0].checked) {
+            if (global[name]['value'] & (2 ** data.bit)) {
                 led.addClass ('on');
             }
             else {
                 led.removeClass ('on');
             }
         });
+    }
+
+    $('.bit .toggle input').on ('change', function () {
+        let name = $(this).data ()['name'];
+        update_input (name);
+        update_output (name);
     });
 }

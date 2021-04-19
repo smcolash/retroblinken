@@ -56,6 +56,13 @@ table.switches > tbody > tr > td {
     */
 }
 
+.empty {
+    width: 12pt;
+    height: 100%;
+    border-left: 2pt solid gray;
+    margin-left: 11.5pt;
+}
+
 .led {
     width: 24pt;
     height: 24pt;
