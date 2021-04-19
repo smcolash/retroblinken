@@ -1,126 +1,3 @@
-/*
-class Switch {
-    constructor (name, callback, led = null) {
-        this._name = name;
-        this._callback = callback;
-        this._value = false;
-        this._led = null;
-
-        self = this;
-
-        if (led) {
-            this._led = document.getElementById (led);
-        }
-
-        this._on = document.getElementById (name + '1');
-        this._off = document.getElementById (name + '2');
-
-        this._on.addEventListener ('change', function () {
-            self._value = true;
-            self.display ();
-            self._callback (self);
-
-            return;
-
-            setTimeout (function () {
-                self._value = false;
-                self.display ();
-                self._on.checked = false;
-                self._off.checked = true;
-            }, 100);
-        });
-    }
-
-    display () {
-        if (this._value) {
-            this._led.classList.add ('on');
-        }
-        else {
-            this._led.classList.remove ('on');
-        }
-    }
-}
-
-
-class Bus {
-    constructor (width, leds = null, switches = null) {
-        this._mask = (2**width) - 1;
-        this._outputs = {};
-        this._value = 0;
-        this._enabled = false;
-        this._listener = null;
-
-        var self = this;
-
-        if (leds) {
-            document.querySelectorAll (leds).forEach (function (e) {
-                self._outputs[parseInt (e.dataset.value)] = {'id': e.id, 'element': e};
-            });
-        }
-
-        if (switches) {
-            document.querySelectorAll (switches).forEach (function (e) {
-                e.addEventListener ('change', function (event) {
-                    if (!self._enabled) {
-                        return;
-                    }
-
-                    let value = 0;
-                    if ('value' in this.dataset) {
-                        value = parseInt (this.dataset.value);
-                    }
-
-                    let led = document.getElementById (this.name);
-
-                    if (value) {
-                        led.classList.add ('on');
-                        address.value = address.value | value;
-                    }
-                    else {
-                        led.classList.remove ('on');
-                        address.value = address.value ^ value;
-                    }
-
-                    console.log (address.value);
-                });
-            });
-        }
-    }
-
-    set value (x) {
-        this._value = x & this._mask;
-        this.display ();
-
-        if (this._listener) {
-            this._listener (x);
-        }
-    }
-
-    get value () {
-        return (this._value);
-    }
-
-    enabled (flag) {
-        this._enabled = flag;
-    }
-
-    display () {
-        for (let key in this._outputs) {
-            if (this._value & key) {
-                this._outputs[key].element.classList.add ('on');
-            }
-            else {
-                this._outputs[key].element.classList.remove ('on');
-            }
-        }
-    }
-
-    registerListener (listener) {
-        this._listener = listener;
-    }
-}
-*/
-
 class PanelControl {
     constructor (name, enabled, value, mask) {
         this._name = name;
@@ -211,38 +88,8 @@ window.onload = function () {
         memory[loop] = Math.trunc (Math.random () * 255);
     }
 
-    count = 16 + Math.random () * 16;
     global['address'].value = 0;
     global['data'].value = 0;
-
-    /*
-    setInterval (function () {
-        let power = document.getElementById ("ON1").checked;
-        if (!power) {
-            address.value = 0;
-            data.value = 0;
-            return;
-        }
-
-        let run = document.getElementById ("RS").checked;
-        if (!run) {
-            address.enabled (true);
-            data.enabled (true);
-            return;
-        }
-
-        address.enabled (false);
-        data.enabled (false);
-
-        data.value = memory[address.value++];
-        count--
-
-        if (count < 1) {
-            address.value = Math.trunc (Math.random () * 2**14);
-            count = 16 + Math.random () * 16;
-        }
-    }, 250);
-    */
 
     function speak (text) {
         try {
@@ -256,6 +103,10 @@ window.onload = function () {
     function execute (g, m) {
         global['address'].value++;
         global['data'].value = memory[global['address'].value];
+
+        if (Math.trunc ((Math.random () * 16)) == 0) {
+            global['address'].value = Math.trunc ((Math.random () * 256)) * 256;
+        }
 
         if ($('#run_stop').is (':checked')) {
             setTimeout (function () {
