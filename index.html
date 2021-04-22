@@ -1,435 +1,437 @@
 <!doctype html>
 <html lang="en">
-<head>
+    <head>
+        <!-- get jQuery from the Google CDN -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <!-- get Bootstrap from the Bootstrap CDN -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <!-- get the local content -->
+        <link href="retroblinken.css" rel="stylesheet" type="text/css">
+        <script src="retroblinken.js"></script>
 
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    </head>
 
-<link href="retroblinken.css" rel="stylesheet" type="text/css">
-<script src="retroblinken.js"></script>
-</head>
+    <body>
 
-<body>
+        <div class='container' style='font-size: 16pt;'>
+            <div class='d-flex flex-row justify-content-center'>
 
-  <div class='container'>
-    <div class='d-flex flex-row justify-content-center'>
+                <div class='p-2 control'>
+                    <div id='A15' class='bit'>
+                        <div class='label'><div class='text'>A15</div></div>
+                        <div data-bit=15 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=15 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A15' class='bit'>
-          <div class='label'>A15</div>
-          <div data-bit=15 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=15 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
+                <div class='p-2 control'>
+                    <div id='A14' class='bit'>
+                        <div class='label'><div class='text'>A14</div></div>
+                        <div data-bit=14 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=14 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A13' class='bit'>
+                        <div class='label'><div class='text'>A13</div></div>
+                        <div data-bit=13 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=13 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A12' class='bit'>
+                        <div class='label'><div class='text'>A12</div></div>
+                        <div data-bit=12 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=12 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A11' class='bit'>
+                        <div class='label'><div class='text'>A11</div></div>
+                        <div data-bit=11 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=11 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A10' class='bit'>
+                        <div class='label'><div class='text'>A10</div></div>
+                        <div data-bit=10 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=10 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A9' class='bit'>
+                        <div class='label'><div class='text'>A9</div></div>
+                        <div data-bit=9 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=9 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A8' class='bit'>
+                        <div class='label'><div class='text'>A8</div></div>
+                        <div data-bit=8 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=8 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A7' class='bit'>
+                        <div class='label'><div class='text'>A7</div></div>
+                        <div data-bit=7 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=7 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A6' class='bit'>
+                        <div class='label'><div class='text'>A6</div></div>
+                        <div data-bit=6 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=6 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A5' class='bit'>
+                        <div class='label'><div class='text'>A5</div></div>
+                        <div data-bit=5 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=5 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A4' class='bit'>
+                        <div class='label'><div class='text'>A4</div></div>
+                        <div data-bit=4 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=4 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A3' class='bit'>
+                        <div class='label'><div class='text'>A3</div></div>
+                        <div data-bit=3 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=3 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A2' class='bit'>
+                        <div class='label'><div class='text'>A2</div></div>
+                        <div data-bit=2 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=2 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A1' class='bit'>
+                        <div class='label'><div class='text'>A1</div></div>
+                        <div data-bit=1 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=1 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='A0' class='bit'>
+                        <div class='label'><div class='text'>A0</div></div>
+                        <div data-bit=0 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=0 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-          </div>
-        </div>
-      </div>
 
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A14' class='bit'>
-          <div class='label'>A14</div>
-          <div data-bit=14 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=14 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
+            <div class='d-flex flex-row justify-content-center'>
+
+                <div class='p-2 control'>
+                    <div id='D7' class='bit'>
+                        <div class='label'><div class='text'>D7</div></div>
+                        <div data-bit=7 data-name='data' class='led orange'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=7 data-name='data'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='D6' class='bit'>
+                        <div class='label'><div class='text'>D6</div></div>
+                        <div data-bit=6 data-name='data' class='led orange'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=6 data-name='data'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='D5' class='bit'>
+                        <div class='label'><div class='text'>D5</div></div>
+                        <div data-bit=5 data-name='data' class='led orange'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=5 data-name='data'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='D4' class='bit'>
+                        <div class='label'><div class='text'>D4</div></div>
+                        <div data-bit=4 data-name='data' class='led orange'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=4 data-name='data'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='D3' class='bit'>
+                        <div class='label'><div class='text'>D3</div></div>
+                        <div data-bit=3 data-name='data' class='led orange'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=3 data-name='data'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='D2' class='bit'>
+                        <div class='label'><div class='text'>D2</div></div>
+                        <div data-bit=2 data-name='data' class='led orange'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=2 data-name='data'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='D1' class='bit'>
+                        <div class='label'><div class='text'>D1</div></div>
+                        <div data-bit=1 data-name='data' class='led orange'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=1 data-name='data'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='D0' class='bit'>
+                        <div class='label'><div class='text'>D0</div></div>
+                        <div data-bit=0 data-name='data' class='led orange'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=0 data-name='data'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div class='empty'>
+                        <div class='vertical-bar'></div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='EN' class='bit'>
+                        <div class='label'><div class='text'>E/N</div></div>
+                        <div data-bit=4 data-name='control' class='led red'></div>
+                        <div class='toggle'>
+                            <input id='examine_next' type='checkbox' class='temporary' data-bit=4 data-name='control'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='DN' class='bit'>
+                        <div class='label'><div class='text'>D/N</div></div>
+                        <div data-bit=3 data-name='control' class='led red'></div>
+                        <div class='toggle'>
+                            <input id='deposit_next' type='checkbox' class='temporary' data-bit=3 data-name='control'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='RST' class='bit'>
+                        <div class='label'><div class='text'>RST</div></div>
+                        <div data-bit=2 data-name='control' class='led red'></div>
+                        <div class='toggle'>
+                            <input id='reset' type='checkbox' class='temporary' data-bit=2 data-name='control'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='RS' class='bit'>
+                        <div class='label'><div class='text'>R/S</div></div>
+                        <div data-bit=1 data-name='control' class='led red'></div>
+                        <div class='toggle'>
+                            <input id='run_stop' type='checkbox' data-bit=1 data-name='control'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='SS' class='bit'>
+                        <div class='label'><div class='text'>SS</div></div>
+                        <div data-bit=0 data-name='control' class='led red'></div>
+                        <div class='toggle'>
+                            <input id='single_step' type='checkbox' class='temporary' data-bit=0 data-name='control'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div class='empty'>
+                        <div class='vertical-bar'></div>
+                    </div>
+                </div>
+
+                <div class='p-2 control'>
+                    <div id='PWR' class='bit'>
+                        <div class='label'><div class='text'>PWR</div></div>
+                        <div data-bit=0 data-name='power' class='led red'></div>
+                        <div class='toggle'>
+                            <input id='power' type='checkbox' data-bit=0 data-name='power'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-          </div>
+
         </div>
-      </div>
 
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A13' class='bit'>
-          <div class='label'>A13</div>
-          <div data-bit=13 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=13 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A12' class='bit'>
-          <div class='label'>A12</div>
-          <div data-bit=12 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=12 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A11' class='bit'>
-          <div class='label'>A11</div>
-          <div data-bit=11 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=11 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A10' class='bit'>
-          <div class='label'>A10</div>
-          <div data-bit=10 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=10 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A9' class='bit'>
-          <div class='label'>A9</div>
-          <div data-bit=9 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=9 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A8' class='bit'>
-          <div class='label'>A8</div>
-          <div data-bit=8 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=8 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A7' class='bit'>
-          <div class='label'>A7</div>
-          <div data-bit=7 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=7 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A6' class='bit'>
-          <div class='label'>A6</div>
-          <div data-bit=6 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=6 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A5' class='bit'>
-          <div class='label'>A5</div>
-          <div data-bit=5 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=5 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A4' class='bit'>
-          <div class='label'>A4</div>
-          <div data-bit=4 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=4 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A3' class='bit'>
-          <div class='label'>A3</div>
-          <div data-bit=3 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=3 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A2' class='bit'>
-          <div class='label'>A2</div>
-          <div data-bit=2 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=2 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A1' class='bit'>
-          <div class='label'>A1</div>
-          <div data-bit=1 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=1 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='A0' class='bit'>
-          <div class='label'>A0</div>
-          <div data-bit=0 data-name='address' class='led green'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=0 data-name='address'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <div class='d-flex flex-row justify-content-center'>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='D7' class='bit'>
-          <div class='label'>D7</div>
-          <div data-bit=7 data-name='data' class='led orange'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=7 data-name='data'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='D6' class='bit'>
-          <div class='label'>D6</div>
-          <div data-bit=6 data-name='data' class='led orange'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=6 data-name='data'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='D5' class='bit'>
-          <div class='label'>D5</div>
-          <div data-bit=5 data-name='data' class='led orange'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=5 data-name='data'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='D4' class='bit'>
-          <div class='label'>D4</div>
-          <div data-bit=4 data-name='data' class='led orange'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=4 data-name='data'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='D3' class='bit'>
-          <div class='label'>D3</div>
-          <div data-bit=3 data-name='data' class='led orange'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=3 data-name='data'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='D2' class='bit'>
-          <div class='label'>D2</div>
-          <div data-bit=2 data-name='data' class='led orange'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=2 data-name='data'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='D1' class='bit'>
-          <div class='label'>D1</div>
-          <div data-bit=1 data-name='data' class='led orange'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=1 data-name='data'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='D0' class='bit'>
-          <div class='label'>D0</div>
-          <div data-bit=0 data-name='data' class='led orange'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=0 data-name='data'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-          <div class='empty'>
-              <div class='vertical-bar'></div>
-          </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='EN' class='bit'>
-          <div class='label'>E/N</div>
-          <div data-bit=4 data-name='control' class='led red'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=4 data-name='control'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='DN' class='bit'>
-          <div class='label'>D/N</div>
-          <div data-bit=3 data-name='control' class='led red'></div>
-          <div class='toggle'>
-            <input type='checkbox' data-bit=3 data-name='control'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='RST' class='bit'>
-          <div class='label'>RST</div>
-          <div data-bit=2 data-name='control' class='led red'></div>
-          <div class='toggle'>
-            <input id='reset' type='checkbox' class='temporary' data-bit=2 data-name='control'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='RS' class='bit'>
-          <div class='label'>R/S</div>
-          <div data-bit=1 data-name='control' class='led red'></div>
-          <div class='toggle'>
-            <input id='run_stop' type='checkbox' data-bit=1 data-name='control'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='SS' class='bit'>
-          <div class='label'>SS</div>
-          <div data-bit=0 data-name='control' class='led red'></div>
-          <div class='toggle'>
-            <input id='single_step' type='checkbox' class='temporary' data-bit=0 data-name='control'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-          <div class='empty'>
-              <div class='vertical-bar'></div>
-          </div>
-      </div>
-
-      <div class='p-2' style='padding: 4px !important;'>
-        <div id='PWR' class='bit'>
-          <div class='label'>PWR</div>
-          <div data-bit=0 data-name='power' class='led red'></div>
-          <div class='toggle'>
-            <input id='power' type='checkbox' data-bit=0 data-name='power'>
-            <div class='switch'>
-              <div class='slider'></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-
-</body>
+    </body>
 
 </html>
