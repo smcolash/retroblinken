@@ -1,4 +1,10 @@
 <!doctype html>
+
+<!--
+    inspired by the IMSAI 8080
+    see http://dunfield.classiccmp.org/imsai/index.htm
+-->
+
 <html lang="en">
     <head>
         <!-- get jQuery from the Google CDN -->
@@ -349,8 +355,9 @@
                         <div class='label'><div class='text'>E/N</div></div>
                         <div data-bit=4 data-name='control' class='led red'></div>
                         <div class='toggle'>
-                            <input id='examine_next' type='checkbox' class='temporary' data-bit=4 data-name='control'>
-                            <div class='switch'>
+                            <input id='examine_next_up' type='checkbox' class='high temporary' data-bit=4 data-name='control'>
+                            <input id='examime_next_down' type='checkbox' class='low temporary' data-bit=4 data-name='control'>
+                            <div class='switch tristate'>
                                 <div class='slider'></div>
                             </div>
                         </div>
@@ -362,8 +369,9 @@
                         <div class='label'><div class='text'>D/N</div></div>
                         <div data-bit=3 data-name='control' class='led red'></div>
                         <div class='toggle'>
-                            <input id='deposit_next' type='checkbox' class='temporary' data-bit=3 data-name='control'>
-                            <div class='switch'>
+                            <input id='deposit_next' type='checkbox' class='high temporary' data-bit=3 data-name='control'>
+                            <input id='asdf' type='checkbox' class='low temporary' data-bit=3 data-name='control'>
+                            <div class='switch tristate'>
                                 <div class='slider'></div>
                             </div>
                         </div>

@@ -4,7 +4,6 @@ class PanelControl {
         this._enabled = enabled;
         this._value = value;
         this._mask = mask;
-        this._changed = false;
     }
 
     //
@@ -13,7 +12,6 @@ class PanelControl {
     set value (x) {
         this._value = x & this._mask;
         this.display ();
-        this._changed = false;
     }
 
     get value () {
@@ -26,10 +24,6 @@ class PanelControl {
 
     enabled () {
         return (this._enabled);
-    }
-
-    changed () {
-        return (this._changed);
     }
 
     //
@@ -58,9 +52,6 @@ class PanelControl {
         let self = this;
         let temp = self.value;
 
-        console.log (this);
-
-        self._changed = false;
         $('.bit .toggle input[data-name="' + this._name + '"]').each (function (index, element) {
             let input = $(element);
             let data = input.data ();
@@ -68,6 +59,7 @@ class PanelControl {
             if (input.is (':checked')) {
                 if (self.enabled () == true) {
                     temp = temp | (2 ** data.bit);
+console.log (temp);
                 }
 
                 if (input.hasClass ('temporary')) {
@@ -79,15 +71,14 @@ class PanelControl {
             else {
                 if (self.enabled () == true) {
                     temp = temp & (self._mask ^ (2 ** data.bit));
+console.log (temp);
                 }
             }
-
-            self._changed = true;
         });
 
+        console.log ([self._name, temp]);
         self.value = temp;
-
-        return (self._changed);
+console.log (temp);
     }
 }
 
@@ -205,6 +196,7 @@ window.onload = function () {
     //
     // FIXME
     $('#examine_next').on ('change', function () {
+        return;
         if (global['power'].value == 0) {
             return;
         }
@@ -220,12 +212,7 @@ window.onload = function () {
 
             global['address'].enable (true);
             global['address'].update ();
-            if (global['address'].changed ()) {
-                global['address'].value++;
-            }
-            else {
-
-            }
+            global['address'].value++;
 
             global['data'].value = memory[global['address'].value];
 
