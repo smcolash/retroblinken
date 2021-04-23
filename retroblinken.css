@@ -20,7 +20,7 @@ body {
     display: flex;
     justify-content: center;
     align-content: center;
-    font-size: 13pt;
+    font-size: 0.9em;
     font-weight: bold;
 }
 

@@ -50,16 +50,17 @@ class PanelControl {
     //
     update () {
         let self = this;
-        let temp = self.value;
+        let onbits = 0;
+        let offbits = 0;
 
         $('.bit .toggle input[data-name="' + this._name + '"]').each (function (index, element) {
             let input = $(element);
             let data = input.data ();
+            let value = 2 ** data.bit;
 
             if (input.is (':checked')) {
                 if (self.enabled () == true) {
-                    temp = temp | (2 ** data.bit);
-console.log (temp);
+                    onbits = onbits | value;
                 }
 
                 if (input.hasClass ('temporary')) {
@@ -70,15 +71,16 @@ console.log (temp);
             }
             else {
                 if (self.enabled () == true) {
-                    temp = temp & (self._mask ^ (2 ** data.bit));
-console.log (temp);
+                    offbits = offbits | value;
                 }
             }
         });
 
-        console.log ([self._name, temp]);
+        let temp = self.value;
+        temp = temp & (self._mask ^ offbits);
+        temp = temp | onbits;
+
         self.value = temp;
-console.log (temp);
     }
 }
 
@@ -98,19 +100,23 @@ window.onload = function () {
     //
     var memory = new Array (2**16);
 
-    // fill the memory with chaotic but deterministic values
-    let seed = 8675309;
-    for (let loop = 0; loop < 2**16; loop++) {
-        seed = seed * 16807 % 2147483647;
-        memory[loop] = seed & 0xff;
-    }
+    function reboot () {
+        // fill the memory with chaotic but deterministic values
+        let seed = 8675309;
+        for (let loop = 0; loop < 2**16; loop++) {
+            seed = seed * 16807 % 2147483647;
+            memory[loop] = seed & 0xff;
+        }
 
-    //
-    // reset the system
-    //
-    running = false;
-    global['address'].value = 0;
-    global['data'].value = 0;
+        //
+        // reset the system
+        //
+        running = false;
+        global['address'].enable (false);
+        global['address'].value = 0;
+        global['data'].enable (false);
+        global['data'].value = 0;
+    }
 
     //
     // saving this for later
@@ -123,6 +129,11 @@ window.onload = function () {
         catch {
         }
     }
+
+    //
+    // perform an initial reboot
+    //
+    reboot ();
 
     //
     // execute the currently addressed instruction
@@ -175,15 +186,17 @@ window.onload = function () {
             running = false;
         }
         else {
+            reboot ();
+
             global['power'].value = 1;
             running = false;
 
-            global['address'].enable ()
-            global['address'].update ()
+            //global['address'].enable ()
+            //global['address'].update ()
             //global['address'].value = 0;
 
-            global['data'].enable ()
-            global['data'].update ()
+            //global['data'].enable ()
+            //global['data'].update ()
             global['data'].value = memory[global['address'].value];
 
             global['control'].update ();
@@ -194,9 +207,7 @@ window.onload = function () {
     //
     // handle a request to examine and step one address
     //
-    // FIXME
-    $('#examine_next').on ('change', function () {
-        return;
+    $('#examine_next_up').on ('change', function () {
         if (global['power'].value == 0) {
             return;
         }
@@ -207,43 +218,75 @@ window.onload = function () {
 
         let input = $(this);
         if (input.is (':checked')) {
-
-            console.log (global['address']);
-
             global['address'].enable (true);
             global['address'].update ();
-            global['address'].value++;
-
+            global['address'].enable (false);
             global['data'].value = memory[global['address'].value];
-
-            console.log (global['address']);
-
         }
     });
 
     //
-    // handle a request to deposit and step one address
+    // handle a request to step one address
     //
-    // FIXME
-    $('#deposit_next').on ('change', function () {
+    $('#examine_next_down').on ('change', function () {
         if (global['power'].value == 0) {
+            return;
+        }
+
+        if (running) {
             return;
         }
 
         let input = $(this);
         if (input.is (':checked')) {
-            global['data'].update ();
-
-            let temp = global['address'].value;
-            global['address'].update ();
-
-            if (global['address'].value != temp) {
-                global['address'].value++;
-            }
-
+            global['address'].value++;
             global['data'].value = memory[global['address'].value];
         }
+    });
 
+    //
+    // handle a request to modify and step one address
+    //
+    $('#deposit_next_up').on ('change', function () {
+        // FIXME
+        if (global['power'].value == 0) {
+            return;
+        }
+
+        if (running) {
+            return;
+        }
+
+        let input = $(this);
+        if (input.is (':checked')) {
+            global['address'].update ();
+
+            global['data'].enable (true)
+            global['data'].update ()
+            global['data'].enable (false)
+
+            memory[global['address'].value] = global['data'].value;
+        }
+    });
+
+    //
+    // handle a request to step one address
+    //
+    $('#deposit_next_down').on ('change', function () {
+        // FIXME
+        if (global['power'].value == 0) {
+            return;
+        }
+
+        if (running) {
+            return;
+        }
+
+        let input = $(this);
+        if (input.is (':checked')) {
+            global['address'].value++;
+            global['data'].value = memory[global['address'].value];
+        }
     });
 
     //
