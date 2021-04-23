@@ -109,6 +109,29 @@ window.onload = function () {
         }
 
         //
+        // add a small test program to page zero
+        //
+        memory[0x0000 + 0] = 0xdb;
+        memory[0x0000 + 1] = 0xff;
+        memory[0x0000 + 2] = 0xd3;
+        memory[0x0000 + 3] = 0xff;
+        memory[0x0000 + 4] = 0xc3;
+        memory[0x0000 + 5] = 0x00;
+        memory[0x0000 + 6] = 0x00;
+
+        //
+        // add a small test program to page one
+        //
+        memory[0x0010 + 0] = 0xdb;
+        memory[0x0010 + 1] = 0xff;
+        memory[0x0010 + 2] = 0x2f;
+        memory[0x0010 + 3] = 0xd3;
+        memory[0x0010 + 4] = 0xff;
+        memory[0x0010 + 5] = 0xc3;
+        memory[0x0010 + 6] = 0x00;
+        memory[0x0010 + 7] = 0x00;
+
+        //
         // reset the system
         //
         running = false;
@@ -147,11 +170,20 @@ window.onload = function () {
             return;
         }
 
-        global['address'].value++;
         global['data'].value = memory[global['address'].value];
+        global['address'].value++;
 
-        if (Math.trunc ((Math.random () * 16)) == 0) {
-            global['address'].value = Math.trunc ((Math.random () * 256)) * 256;
+        let opcode = global['data'].value;
+        if (opcode == 0xc3) {
+            let address = memory[global['address'].value] +
+                memory[global['address'].value + 1] * 256;
+            global['address'].value = address;
+        }
+
+        if (false) {
+            if (Math.trunc ((Math.random () * 16)) == 0) {
+                global['address'].value = Math.trunc ((Math.random () * 256)) * 256;
+            }
         }
 
         let tick = 250;
@@ -266,6 +298,7 @@ window.onload = function () {
             global['data'].enable (false)
 
             memory[global['address'].value] = global['data'].value;
+            //global['address'].value++;
         }
     });
 
@@ -284,8 +317,14 @@ window.onload = function () {
 
         let input = $(this);
         if (input.is (':checked')) {
+
+            global['data'].enable (true)
+            global['data'].update ()
+            global['data'].enable (false)
+
+
+            memory[global['address'].value] = global['data'].value;
             global['address'].value++;
-            global['data'].value = memory[global['address'].value];
         }
     });
 
