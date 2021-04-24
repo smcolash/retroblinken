@@ -94,6 +94,7 @@ body {
     margin-bottom: 0.25em;
 }
 
+/*
 .tristate {
     height: 3.5em;
 }
@@ -109,6 +110,7 @@ body {
     height: 30%;
     top: 2.5em;
 }
+*/
 
 .round {
     border-radius: 1em !important;
@@ -136,6 +138,7 @@ body {
     top: 0.25em;
 }
 
+/*
 .toggle input.high:checked ~ .switch .slider {
     top: 0.25em;
 }
@@ -143,3 +146,4 @@ body {
 .toggle input.low:checked ~ .switch .slider {
     top: 2.25em;
 }
+*/
