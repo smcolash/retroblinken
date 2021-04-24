@@ -133,6 +133,10 @@ body {
     left: 0.25em;
 }
 
+.megahack-on {
+    top: 0.25em;
+}
+
 .toggle input:checked ~ .switch .slider {
     top: 0.25em;
 }
