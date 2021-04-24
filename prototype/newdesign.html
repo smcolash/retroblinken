@@ -28,10 +28,6 @@ body {
     color: lightgray;
 }
 
-.yikes {
-    background-color: orange;
-}
-
 .label {
     width: 1.5em;
     height: 1.5em;
@@ -63,6 +59,18 @@ body {
     margin: 0 auto;
 }
 
+.round {
+    border-radius: 1em !important;
+}
+
+.square {
+    border-radius: 0em !important;
+}
+
+.rounded {
+    border-radius: 0.25em !important;
+}
+
 .led {
     width: 1.5em;
     height: 1.5em;
@@ -89,21 +97,16 @@ body {
     opacity: 1.0 !important;
 }
 
-
-
-
 .bit {
     display: inline-block;
     margin: 0.125em;
-    border: 1px solid red;
+    _border: 1px solid red;
 }
 
 .new-switch {
-
     display: block;
     position: relative;
     user-select: none;
-
     display: inline-block;
     width: 1.5em;
     height: 2.5em;
@@ -135,18 +138,50 @@ body {
     top: 0em;
 }
 
+.new-tristate {
+    height: 3em;
+}
 
 
 
 
 
+/* ============================================= */
 
 
 
+.tristate {
+    height: 3.5em;
+}
+
+.toggle input.high {
+    border: 5px solid red;
+    height: 30%;
+    top: 0.25em;
+}
+
+.toggle input.low {
+    border: 5px solid red;
+    height: 30%;
+    top: 2.5em;
+}
+
+
+.toggle input:checked ~ .switch .slider {
+    top: 0.25em;
+}
+
+.toggle input.high:checked ~ .switch .slider {
+    top: 0.25em;
+}
+
+.toggle input.low:checked ~ .switch .slider {
+    top: 2.25em;
+}
 
 
 
-
+/* obsolete below here... */
 
 
 
@@ -178,34 +213,6 @@ body {
     margin-bottom: 0.25em;
 }
 
-.tristate {
-    height: 3.5em;
-}
-
-.toggle input.high {
-    border: 5px solid red;
-    height: 30%;
-    top: 0.25em;
-}
-
-.toggle input.low {
-    border: 5px solid red;
-    height: 30%;
-    top: 2.5em;
-}
-
-.round {
-    border-radius: 1em !important;
-}
-
-.square {
-    border-radius: 0em !important;
-}
-
-.rounded {
-    border-radius: 0.25em !important;
-}
-
 .slider {
     height:1em;
     width: 1em;
@@ -216,49 +223,32 @@ body {
     left: 0.25em;
 }
 
-.megahack-on {
-    top: 0.25em;
-}
-
-.toggle input:checked ~ .switch .slider {
-    top: 0.25em;
-}
-
-.toggle input.high:checked ~ .switch .slider {
-    top: 0.25em;
-}
-
-.toggle input.low:checked ~ .switch .slider {
-    top: 2.25em;
-}
-
 </style>
 
     <body>
 
-        <div class='container-fluid' style='font-size: 8pt;'>
+        <div class='container-fluid' style='font-size: 2.5vw;'>
             <div class='d-flex flex-row justify-content-center'>
-                <div id='address_controls' style='font-size: 2vw;'>
+                <div id='address_controls'>
                 </div>
             </div>
 
             <div class='d-flex flex-row justify-content-center'>
-                <div id='data_controls' style='font-size: 2vw;'>
+                <div id='data_controls'>
                 </div>
-            </div>
-
-            <div class='d-flex flex-row justify-content-center'>
-                <div style='font-size: 2vw;'>
-
-                    <div id='PWR' class='bit'>
-                        <div class='label'><div class='text'>A15</div></div>
-                        <div id='asdf' data-bit=0 data-name='power' class='led red'></div>
-                        <div class='new-switch'>
-                            <input id='power' type='checkbox' data-bit=0 data-name='power'>
-                            <div class='new-slider'></div>
-                        </div>
+                <div class='bit'>
+                    <div class='empty'>
+                        <div class='vertical-bar'></div>
                     </div>
-
+                </div>
+                <div id='operating_controls'>
+                </div>
+                <div class='bit'>
+                    <div class='empty'>
+                        <div class='vertical-bar'></div>
+                    </div>
+                </div>
+                <div id='power_controls'>
                 </div>
             </div>
 
@@ -269,12 +259,14 @@ body {
     <script>
 
 
-        function create_bus_control (selector, bus, width, prefix, color) {
+        function create_bus_control (selector, config) {
             let element = $(selector);
+            let bus = config.name;
+            let color = config.color;
 
-            for (let loop = 0; loop < width; loop++) {
-                let bit = (width - loop) - 1;
-                let name = prefix + bit;
+            for (let loop in config.bits) {
+                let bit = config.bits[loop].bit;
+                let name = config.bits[loop].name;
 
                 let outer = $("<div id='" + name + "' class='bit'>");
                 element.append (outer);
@@ -307,8 +299,72 @@ body {
             }
         }
 
-        create_bus_control ('#address_controls', 'address', 16, 'A', 'green');
-        create_bus_control ('#data_controls', 'data', 8, 'D', 'orange');
+
+let address = {
+    'name': 'address',
+    'color': 'green',
+    'bits': [
+        {'name': 'A15', 'bit': 15},
+        {'name': 'A14', 'bit': 14},
+        {'name': 'A13', 'bit': 13},
+        {'name': 'A12', 'bit': 12},
+        {'name': 'A11', 'bit': 11},
+        {'name': 'A10', 'bit': 10},
+        {'name': 'A9', 'bit': 9},
+        {'name': 'A8', 'bit': 8},
+        {'name': 'A7', 'bit': 7},
+        {'name': 'A6', 'bit': 6},
+        {'name': 'A5', 'bit': 5},
+        {'name': 'A4', 'bit': 4},
+        {'name': 'A3', 'bit': 3},
+        {'name': 'A2', 'bit': 2},
+        {'name': 'A1', 'bit': 1},
+        {'name': 'A0', 'bit': 0}
+    ]
+};
+
+let data = {
+    'name': 'data',
+    'color': 'orange',
+    'bits': [
+        {'name': 'D7', 'bit': 7},
+        {'name': 'D6', 'bit': 6},
+        {'name': 'D5', 'bit': 5},
+        {'name': 'D4', 'bit': 4},
+        {'name': 'D3', 'bit': 3},
+        {'name': 'D2', 'bit': 2},
+        {'name': 'D1', 'bit': 1},
+        {'name': 'D0', 'bit': 0}
+    ]
+};
+
+let controls = {
+    'name': 'controls',
+    'color': 'red',
+    'bits': [
+        {'name': 'E/N', 'bit': 4, 'temporary': true, 'tristate': true},
+        {'name': 'D/N', 'bit': 3, 'temporary': true, 'tristate': true},
+        {'name': 'RST', 'bit': 2, 'temporary': true},
+        {'name': 'R/S', 'bit': 1},
+        {'name': 'SS', 'bit': 0, 'temporary': true}
+    ]
+};
+
+let power = {
+    'name': 'power',
+    'color': 'red',
+    'bits': [
+        {'name': 'PWR', 'bit': 0}
+    ]
+};
+
+
+
+
+        create_bus_control ('#address_controls', address);
+        create_bus_control ('#data_controls', data);
+        create_bus_control ('#operating_controls', controls);
+        create_bus_control ('#power_controls', power);
 
 
         // disable the context menu
