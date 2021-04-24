@@ -122,14 +122,14 @@ window.onload = function () {
         //
         // add a small test program to page one
         //
-        memory[0x0010 + 0] = 0xdb;
-        memory[0x0010 + 1] = 0xff;
-        memory[0x0010 + 2] = 0x2f;
-        memory[0x0010 + 3] = 0xd3;
-        memory[0x0010 + 4] = 0xff;
-        memory[0x0010 + 5] = 0xc3;
-        memory[0x0010 + 6] = 0x00;
-        memory[0x0010 + 7] = 0x00;
+        memory[0x0100 + 0] = 0xdb;
+        memory[0x0100 + 1] = 0xff;
+        memory[0x0100 + 2] = 0x2f;
+        memory[0x0100 + 3] = 0xd3;
+        memory[0x0100 + 4] = 0xff;
+        memory[0x0100 + 5] = 0xc3;
+        memory[0x0100 + 6] = 0x00;
+        memory[0x0100 + 7] = 0x00;
 
         //
         // reset the system
