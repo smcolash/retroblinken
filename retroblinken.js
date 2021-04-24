@@ -399,13 +399,25 @@ if (false) {
     });
 
 
+/*
+ * Notes:
+ * 1) the checkboxes and events are behaving properly.
+ * 2) EVERYTHING is working right except on my iPhone.
+ * 3) the first switch always withs correctly in all ways.
+ * 4) The non-first switches fail to show the toggling behavior.
+ * 5) the initial toggle behavior was via CSS selectors and styles.
+ * 6) added hack to respond to change and force add/remove of styles, DID NOT WORK.
+ * 7) seems the same problem for selector adn event handling.
+ * 8) perhaps the page structuring is confusing the selector, but ONLY on the iPhone?
+ * 9) inserted code to use the selector and report the count, it worked fine.
+ * 10) ...and this used ot work fine.
+ */
 
 
     $('.toggle input').on ('change', function () {
         let input = $(this);
 
         if (input.is (':checked')) {
-            console.log ('checked');
             input.addClass ('megahack-on');
         }
         else {

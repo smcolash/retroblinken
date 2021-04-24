@@ -1,0 +1,309 @@
+<!doctype html>
+
+<html lang="en">
+    <head>
+        <!-- get jQuery from the Google CDN -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+        <!-- get Bootstrap from the Bootstrap CDN -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+        <!-- get the local content -->
+        <!--
+        <link href="retroblinken.css" rel="stylesheet" type="text/css">
+        <script src="retroblinken.js"></script>
+        -->
+
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    </head>
+
+
+<style>
+
+body {
+    background-color: #212121;
+    color: lightgray;
+}
+
+.yikes {
+    background-color: orange;
+}
+
+.label {
+    width: 1.5em;
+    height: 1.5em;
+    margin: 0.125em;
+    user-select: none;
+}
+
+.label .text {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.empty {
+    width: 1.5em;
+    height: 100%;
+    margin: 0.125em;
+}
+
+.vertical-bar {
+    width: 0pt;
+    height: 100%;
+    border: 1pt solid gray;
+    background-color: gray;
+    margin: 0 auto;
+}
+
+.led {
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 0.25em;
+    margin: 0.125em;
+    transition: opacity 0.1s ease-in-out;
+    background: radial-gradient(#ff6060, #cf1010);
+    opacity: 0.2;
+}
+
+.red {
+    background: radial-gradient(#ff6060, #cf1010);
+}
+
+.orange {
+    background: radial-gradient(#ff8000, #804000);
+}
+
+.green {
+    background: radial-gradient(#60ff60, #108f10);
+}
+
+.on {
+    opacity: 1.0 !important;
+}
+
+
+
+
+.bit {
+    display: inline-block;
+    margin: 0.125em;
+    border: 1px solid red;
+}
+
+.new-switch {
+
+    display: block;
+    position: relative;
+    user-select: none;
+
+    display: inline-block;
+    width: 1.5em;
+    height: 2.5em;
+    border-radius: 0.25em;
+    background-color: gray;
+    margin: 0.125em;
+}
+
+.new-slider {
+    height:1em;
+    width: 1em;
+    border-radius: inherit;
+    background-color: #424242;
+    position: relative;
+    top: 1em;
+    margin: 0.25em;
+}
+
+.new-switch input {
+    cursor: pointer;
+    position: absolute;
+    opacity: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+}
+
+.new-switch input:checked ~ .new-slider {
+    top: 0em;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.toggle {
+    display: block;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.toggle input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+}
+
+.switch {
+    display: inline-block;
+    width: 1.5em;
+    height: 2.5em;
+    border-radius: 0.25em;
+    background-color: gray;
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
+
+.tristate {
+    height: 3.5em;
+}
+
+.toggle input.high {
+    border: 5px solid red;
+    height: 30%;
+    top: 0.25em;
+}
+
+.toggle input.low {
+    border: 5px solid red;
+    height: 30%;
+    top: 2.5em;
+}
+
+.round {
+    border-radius: 1em !important;
+}
+
+.square {
+    border-radius: 0em !important;
+}
+
+.rounded {
+    border-radius: 0.25em !important;
+}
+
+.slider {
+    height:1em;
+    width: 1em;
+    border-radius: inherit;
+    background-color: #424242;
+    position: relative;
+    top: 1.25em;
+    left: 0.25em;
+}
+
+.megahack-on {
+    top: 0.25em;
+}
+
+.toggle input:checked ~ .switch .slider {
+    top: 0.25em;
+}
+
+.toggle input.high:checked ~ .switch .slider {
+    top: 0.25em;
+}
+
+.toggle input.low:checked ~ .switch .slider {
+    top: 2.25em;
+}
+
+</style>
+
+    <body>
+
+        <div class='container-fluid' style='font-size: 8pt;'>
+            <div class='d-flex flex-row justify-content-center'>
+
+                <div style='font-size: 6vw;'>
+                    <div id='A15' class='bit'>
+                        <div class='label'><div class='text'>A15</div></div>
+                        <div data-bit=15 data-name='address' class='led green'></div>
+                        <div class='new-switch'>
+                            <input type='checkbox' data-bit=15 data-name='address'>
+                            <div class='new-slider'></div>
+                        </div>
+                    </div>
+                    <div id='A15' class='bit'>
+                        <div class='label'><div class='text'>A15</div></div>
+                        <div data-bit=15 data-name='address' class='led green'></div>
+                        <div class='new-switch'>
+                            <input type='checkbox' data-bit=15 data-name='address'>
+                            <div class='new-slider'></div>
+                        </div>
+                    </div>
+                    <div id='PWR' class='bit'>
+                        <div class='label'><div class='text'>A15</div></div>
+                        <div id='asdf' data-bit=0 data-name='power' class='led red'></div>
+                        <div class='new-switch'>
+                            <input id='power' type='checkbox' data-bit=0 data-name='power'>
+                            <div class='new-slider'></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class='d-flex flex-row justify-content-center'>
+                <div id="debug" style="font-size: 3vw; width: 100%; border: 2px solid dimgray;">
+                    debug...
+                </div>
+            </div>
+
+        </div>
+
+    </body>
+
+    <script>
+
+        // disable the context menu
+        $(document).on ('contextmenu', function () {
+            console.log ('context');
+            return (false);
+        });
+
+        // handle the power switch
+        $('#power').on ('change', function () {
+            console.log ('change');
+            let element = $(this);
+            let led = $('#asdf');
+
+            console.log (element);
+            console.log (led);
+
+            if (element.is (':checked')) {
+                led.addClass ('on');
+            }
+            else {
+                led.removeClass ('on');
+            }
+        });
+
+
+    </script>
+
+</html>
