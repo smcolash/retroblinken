@@ -20,7 +20,7 @@
 
     <body>
 
-        <div class='container' style='font-size: 7vw;'>
+        <div class='container-fluid' style='font-size: 6vw;'>
             <div class='d-flex flex-row justify-content-center'>
 
                 <div class='p-2'>
@@ -29,6 +29,19 @@
                         <div data-bit=15 data-name='address' class='led green'></div>
                         <div class='toggle'>
                             <input type='checkbox' data-bit=15 data-name='address'>
+                            <div class='switch'>
+                                <div class='slider'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='p-2'>
+                    <div id='A0' class='bit'>
+                        <div class='label'><div class='text'>A0</div></div>
+                        <div data-bit=0 data-name='address' class='led green'></div>
+                        <div class='toggle'>
+                            <input type='checkbox' data-bit=0 data-name='address'>
                             <div class='switch'>
                                 <div class='slider'></div>
                             </div>
@@ -63,6 +76,14 @@
                 </div>
 
             </div>
+
+
+            <div class='d-flex flex-row justify-content-center'>
+                <div id="debug" style="font-size: 3vw; width: 100%; border: 2px solid dimgray;">
+                    debug...
+                </div>
+            </div>
+
 
         </div>
 

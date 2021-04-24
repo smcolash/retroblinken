@@ -397,4 +397,18 @@ if (false) {
             }, 100);
         }
     });
+
+
+
+
+    $('.toggle input').on ('change', function () {
+        let checked = $('.toggle input:checked ~ .switch .slider');
+        let count = checked.length;
+        $('#debug').text (count);
+    });
+
+
+
+
+
 }
