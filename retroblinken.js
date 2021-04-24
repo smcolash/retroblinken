@@ -386,11 +386,13 @@ window.onload = function () {
         let name = input.data ()['name'];
         global[name].update ();
 
+        /*
         if (!$('body').hasClass ('yikes')) {
             $('body').addClass ('yikes');
             setTimeout (function () {
                 $('body').removeClass ('yikes');
             }, 100);
         }
+        */
     });
 }
