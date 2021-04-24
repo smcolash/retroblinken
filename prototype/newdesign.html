@@ -134,7 +134,15 @@ body {
     height: 100%;
 }
 
+.new-switch input:checked {
+    top: 0em;
+}
+
 .new-switch input:checked ~ .new-slider {
+    top: 0em;
+}
+
+.new-switch .new-slider ~ input:checked {
     top: 0em;
 }
 
@@ -229,28 +237,44 @@ body {
 
         <div class='container-fluid' style='font-size: 2.5vw;'>
             <div class='d-flex flex-row justify-content-center'>
-                <div id='address_controls'>
+                <div id='address_controls' style='display: flex;'>
                 </div>
             </div>
 
             <div class='d-flex flex-row justify-content-center'>
-                <div id='data_controls'>
+                <div id='data_controls' style='display: flex;'>
                 </div>
                 <div class='bit'>
                     <div class='empty'>
                         <div class='vertical-bar'></div>
                     </div>
                 </div>
-                <div id='operating_controls'>
+                <div id='operating_controls' style='display: flex;'>
                 </div>
                 <div class='bit'>
                     <div class='empty'>
                         <div class='vertical-bar'></div>
                     </div>
                 </div>
-                <div id='power_controls'>
+                <div id='power_controls' style='display: flex;'>
                 </div>
             </div>
+
+
+
+
+
+                    <div id='A15' class='bit'>
+                        <div class='label'><div class='text'>A15</div></div>
+                        <div data-bit=15 data-name='address' class='led green'></div>
+                        <div class='new-switch tristate'>
+                            <input type='checkbox' class='high temporary' data-bit=15 data-name='address'>
+                            <input type='checkbox' class='low temporary' data-bit=15 data-name='address'>
+                            <div class='new-slider'></div>
+                        </div>
+                    </div>
+
+
 
         </div>
 
@@ -259,14 +283,15 @@ body {
     <script>
 
 
-        function create_bus_control (selector, config) {
+        function create_control (selector, config) {
             let element = $(selector);
             let bus = config.name;
             let color = config.color;
 
             for (let loop in config.bits) {
-                let bit = config.bits[loop].bit;
-                let name = config.bits[loop].name;
+                let item = config.bits[loop];
+                let bit = item.bit;
+                let name = item.name;
 
                 let outer = $("<div id='" + name + "' class='bit'>");
                 element.append (outer);
@@ -285,6 +310,25 @@ body {
 
                 let slider = $("<div class='new-slider'></div>");
                 toggle.append (slider);
+
+
+
+
+                let tristate = false;
+                if ('tristate' in item) {
+                    tristate = item.tristate;
+                }
+
+                let momentary = false;
+                if ('momentary' in item) {
+                    momentary = item.momentary;
+                }
+
+
+                if (tristate) {
+                    toggle.addClass ('tristate');
+                }
+
 
                 /*
                     <div id='A15' class='bit'>
@@ -342,11 +386,11 @@ let controls = {
     'name': 'controls',
     'color': 'red',
     'bits': [
-        {'name': 'E/N', 'bit': 4, 'temporary': true, 'tristate': true},
-        {'name': 'D/N', 'bit': 3, 'temporary': true, 'tristate': true},
-        {'name': 'RST', 'bit': 2, 'temporary': true},
+        {'name': 'E/N', 'bit': 4, 'momentary': true, 'tristate': true},
+        {'name': 'D/N', 'bit': 3, 'momentary': true, 'tristate': true},
+        {'name': 'RST', 'bit': 2, 'momentary': true},
         {'name': 'R/S', 'bit': 1},
-        {'name': 'SS', 'bit': 0, 'temporary': true}
+        {'name': 'SS', 'bit': 0, 'momentary': true}
     ]
 };
 
@@ -361,10 +405,10 @@ let power = {
 
 
 
-        create_bus_control ('#address_controls', address);
-        create_bus_control ('#data_controls', data);
-        create_bus_control ('#operating_controls', controls);
-        create_bus_control ('#power_controls', power);
+        create_control ('#address_controls', address);
+        create_control ('#data_controls', data);
+        create_control ('#operating_controls', controls);
+        create_control ('#power_controls', power);
 
 
         // disable the context menu
