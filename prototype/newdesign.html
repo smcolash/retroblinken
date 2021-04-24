@@ -238,24 +238,18 @@ body {
 
         <div class='container-fluid' style='font-size: 8pt;'>
             <div class='d-flex flex-row justify-content-center'>
+                <div id='address_controls' style='font-size: 2vw;'>
+                </div>
+            </div>
 
-                <div style='font-size: 6vw;'>
-                    <div id='A15' class='bit'>
-                        <div class='label'><div class='text'>A15</div></div>
-                        <div data-bit=15 data-name='address' class='led green'></div>
-                        <div class='new-switch'>
-                            <input type='checkbox' data-bit=15 data-name='address'>
-                            <div class='new-slider'></div>
-                        </div>
-                    </div>
-                    <div id='A15' class='bit'>
-                        <div class='label'><div class='text'>A15</div></div>
-                        <div data-bit=15 data-name='address' class='led green'></div>
-                        <div class='new-switch'>
-                            <input type='checkbox' data-bit=15 data-name='address'>
-                            <div class='new-slider'></div>
-                        </div>
-                    </div>
+            <div class='d-flex flex-row justify-content-center'>
+                <div id='data_controls' style='font-size: 2vw;'>
+                </div>
+            </div>
+
+            <div class='d-flex flex-row justify-content-center'>
+                <div style='font-size: 2vw;'>
+
                     <div id='PWR' class='bit'>
                         <div class='label'><div class='text'>A15</div></div>
                         <div id='asdf' data-bit=0 data-name='power' class='led red'></div>
@@ -264,13 +258,7 @@ body {
                             <div class='new-slider'></div>
                         </div>
                     </div>
-                </div>
 
-            </div>
-
-            <div class='d-flex flex-row justify-content-center'>
-                <div id="debug" style="font-size: 3vw; width: 100%; border: 2px solid dimgray;">
-                    debug...
                 </div>
             </div>
 
@@ -279,6 +267,49 @@ body {
     </body>
 
     <script>
+
+
+        function create_bus_control (selector, bus, width, prefix, color) {
+            let element = $(selector);
+
+            for (let loop = 0; loop < width; loop++) {
+                let bit = (width - loop) - 1;
+                let name = prefix + bit;
+
+                let outer = $("<div id='" + name + "' class='bit'>");
+                element.append (outer);
+
+                let label = $("<div class='label'><div class='text'>" + name + "</div></div>");
+                outer.append (label);
+
+                let led = $("<div data-bit=" + bit + " data-name='" + bus + "' class='led " + color + "'></div>");
+                outer.append (led);
+
+                let toggle = $("<div class='new-switch'>");
+                outer.append (toggle);
+
+                let input = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
+                toggle.append (input);
+
+                let slider = $("<div class='new-slider'></div>");
+                toggle.append (slider);
+
+                /*
+                    <div id='A15' class='bit'>
+                        <div class='label'><div class='text'>A15</div></div>
+                        <div data-bit=15 data-name='address' class='led green'></div>
+                        <div class='new-switch'>
+                            <input type='checkbox' data-bit=15 data-name='address'>
+                            <div class='new-slider'></div>
+                        </div>
+                    </div>
+                 */
+            }
+        }
+
+        create_bus_control ('#address_controls', 'address', 16, 'A', 'green');
+        create_bus_control ('#data_controls', 'data', 8, 'D', 'orange');
+
 
         // disable the context menu
         $(document).on ('contextmenu', function () {

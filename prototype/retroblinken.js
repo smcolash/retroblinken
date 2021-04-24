@@ -85,6 +85,7 @@ class PanelControl {
 }
 
 window.onload = function () {
+    return;
     //
     // create global system registers
     //
