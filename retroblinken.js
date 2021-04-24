@@ -153,6 +153,7 @@ window.onload = function () {
         }
     }
 
+if (false) {
     //
     // perform an initial reboot
     //
@@ -378,21 +379,22 @@ window.onload = function () {
         }
     });
 
+}
+
     //
     // dispatch switch events to the appropriate handlers
     //
     $('.bit .toggle input').on ('change', function () {
+        return;
         let input = $(this);
         let name = input.data ()['name'];
         global[name].update ();
 
-        /*
         if (!$('body').hasClass ('yikes')) {
             $('body').addClass ('yikes');
             setTimeout (function () {
                 $('body').removeClass ('yikes');
             }, 100);
         }
-        */
     });
 }
