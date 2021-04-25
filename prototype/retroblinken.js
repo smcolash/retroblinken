@@ -150,30 +150,6 @@ function create_control (selector, config) {
 
 window.onload = function () {
     //
-    // disable the context menu
-    //
-    $(document).on ('contextmenu', function () {
-        return (false);
-    });
-
-    //
-    // add momentary switch behavior
-    //
-    $('input.momentary').each (function () {
-        $(this).on ('change', function () {
-            let input = $(this);
-            if (input.is (':checked')) {
-                setTimeout (function () {
-                    input.prop ('checked', false);
-                }, 100);
-            }
-            else {
-                console.log (2);
-            }
-        });
-    });
-
-    //
     // define the address bus LEDs and switches
     //
     let address = {
@@ -258,10 +234,36 @@ window.onload = function () {
 
 
 
+    //
+    // disable the context menu
+    //
+    $(document).on ('contextmenu', function () {
+        return (false);
+    });
 
-
+    //
+    // add momentary switch behavior
+    //
+    $('input.momentary').each (function () {
+        $(this).on ('change', function () {
+            let input = $(this);
+            if (input.is (':checked')) {
+                setTimeout (function () {
+                    input.prop ('checked', false);
+                }, 100);
+            }
+            else {
+                console.log (2);
+            }
+        });
+    });
 
     return;
+
+
+
+
+
     //
     // create global system registers
     //
