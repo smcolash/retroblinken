@@ -188,7 +188,7 @@ class Processor {
 
         this.memory = new Array (2**16);
         this.io = new Array (2**8);
-        this.ticks = 250;
+        this.ticks = 50;
 
         /*
         this.opcodes = {
@@ -215,16 +215,7 @@ class Processor {
         });
     }
 
-    initialize () {
-        //
-        // fill the memory with chaotic but deterministic values
-        //
-        let seed = 8675309;
-        for (let loop = 0; loop < 2**16; loop++) {
-            seed = seed * 16807 % 2147483647;
-            this.memory[loop] = seed & 0xff;
-        }
-
+    load () {
         //
         // add a small test program to page zero
         //
@@ -247,6 +238,22 @@ class Processor {
         this.memory[0x0100 + 5] = 0xc3;
         this.memory[0x0100 + 6] = 0x00;
         this.memory[0x0100 + 7] = 0x00;
+    }
+
+    initialize () {
+        //
+        // fill the memory with chaotic but deterministic values
+        //
+        let seed = 8675309;
+        for (let loop = 0; loop < 2**16; loop++) {
+            seed = seed * 16807 % 2147483647;
+            this.memory[loop] = seed & 0xff;
+        }
+
+        //
+        // load a simple test program
+        //
+        this.load ();
 
         //
         // reset everuthing else
@@ -258,8 +265,32 @@ class Processor {
         this.clear ();
     }
 
-    step () {
+    fetch8 () {
+        let temp = this.memory[this.registers.pc];
         this.registers.pc = (this.registers.pc + 1) & 0xffff;
+
+        return (temp);
+    }
+
+    fetch16 () {
+        let low = this.fetch8 ();
+        let high = this.fetch8 ();
+
+        return ((high * 256) + low);
+    }
+
+    step () {
+        //
+        // get the next instruction
+        //
+        let opcode = this.fetch8 ();
+
+        //
+        // process the instruction
+        //
+        if (opcode == 0xc3) {
+            this.registers.pc = this.fetch16 ();
+        }
     }
 }
 
@@ -364,13 +395,14 @@ window.onload = function () {
         //
         // reset the system
         //
+        cpu.reset ();
+
         address.enable (false);
-        address.value = 0;
+        address.value = cpu.registers.pc;
 
         data.enable (false);
         data.value = 0;
 
-        cpu.reset ();
     }
 
     //
@@ -385,14 +417,10 @@ window.onload = function () {
             return;
         }
 
-        data.value = cpu.memory[address.value++];
+        cpu.step ();
 
-        let opcode = data.value;
-        if (opcode == 0xc3) {
-            let value = cpu.memory[address.value] +
-                cpu.memory[address.value + 1] * 256;
-            address.value = value;
-        }
+        address.value = cpu.registers.pc;
+        data.value = cpu.memory[cpu.registers.pc];
 
         let tick = cpu.ticks;
         if (running) {
@@ -408,8 +436,9 @@ window.onload = function () {
     $($('.switch input[data-name=power][data-bit=0]')[0]).on ('change', function () {
         let input = $(this);
 
+        address.enable (false);
+
         if (!input.is (':checked')) {
-            address.enable (false);
             address.value = 0;
 
             data.enable (false);
@@ -422,6 +451,7 @@ window.onload = function () {
         }
         else {
             cpu.initialize ();
+            address.value = cpu.registers.pc;
 
             power.value = 1;
 
@@ -439,6 +469,8 @@ window.onload = function () {
     // handle the change to run/stop
     //
     $($('.switch input[data-name=controls][data-bit=1]')[0]).on ('change', function () {
+        running = false;
+
         let input = $(this);
         if (input.is (':checked')) {
             running = true;
@@ -447,10 +479,8 @@ window.onload = function () {
             address.update ();
             address.enable (false)
 
+            cpu.registers.pc = address.value;
             step ();
-        }
-        else {
-            running = false;
         }
     })
 
@@ -490,7 +520,7 @@ window.onload = function () {
     });
 
     //
-    // handle a request to examine and step one address
+    // handle a request to examime one address
     //
     $($('.switch input.high[data-name=controls][data-bit=4]')[0]).on ('change', function () {
         if (power.value == 0) {
@@ -503,7 +533,6 @@ window.onload = function () {
 
         let input = $(this);
         if (input.is (':checked')) {
-
             address.enable (true);
             address.update ();
             address.enable (false);
@@ -513,7 +542,7 @@ window.onload = function () {
     });
 
     //
-    // handle a request to step one address
+    // handle a request to examine and step one address
     //
     $($('.switch input.low[data-name=controls][data-bit=4]')[0]).on ('change', function () {
         if (power.value == 0) {
@@ -526,13 +555,12 @@ window.onload = function () {
 
         let input = $(this);
         if (input.is (':checked')) {
-            address.value++;
-            data.value = cpu.memory[address.value];
+            data.value = cpu.memory[++address.value];
         }
     });
 
     //
-    // handle a request to modify and step one address
+    // handle a request to modify one address
     //
     $($('.switch input.high[data-name=controls][data-bit=3]')[0]).on ('change', function () {
         if (power.value == 0) {
@@ -545,7 +573,9 @@ window.onload = function () {
 
         let input = $(this);
         if (input.is (':checked')) {
+            address.enable (true);
             address.update ();
+            address.enable (false);
 
             data.enable (true)
             data.update ()
@@ -556,7 +586,7 @@ window.onload = function () {
     });
 
     //
-    // handle a request to step one address
+    // handle a request to modify and step one address
     //
     $($('.switch input.low[data-name=controls][data-bit=3]')[0]).on ('change', function () {
         if (power.value == 0) {
