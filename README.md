@@ -16,7 +16,7 @@ https://smcolash.github.io/retroblinken/prototype/index.html.
 The memory is initialized on power-up to a repeatable but chaotic sequence of bytes.
 Once initialized, two short test programs are written to memory, one at 0x0000 and
 the other at 0x0100. These test programs are taken from page 35 of the original
-IMSAI 8080 user manual.
+[IMSAI 8080 user manual](http://dunfield.classiccmp.org/imsai/imsai.pdf).
 
 Running from address 0x0000 (e.g. reset) will run the first program. This program
 executes a few simple instructions and then jumps back to address 0x0000.
