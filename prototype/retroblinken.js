@@ -84,7 +84,183 @@ class PanelControl {
     }
 }
 
+function create_control (selector, config) {
+    let element = $(selector);
+    let bus = config.name;
+    let color = config.color;
+
+    for (let loop in config.bits) {
+        let item = config.bits[loop];
+        let bit = item.bit;
+        let name = item.name;
+
+        let tristate = false;
+        if ('tristate' in item) {
+            tristate = item.tristate;
+        }
+
+        let momentary = false;
+        if ('momentary' in item) {
+            momentary = item.momentary;
+        }
+
+        let outer = $("<div id='" + name + "' class='bit'>");
+        element.append (outer);
+
+        let label = $("<div class='label'><div class='text'>" + name + "</div></div>");
+        outer.append (label);
+
+        let led = $("<div data-bit=" + bit + " data-name='" + bus + "' class='led " + color + "'></div>");
+        outer.append (led);
+
+        let toggle = $("<div class='new-switch'>");
+        outer.append (toggle);
+
+        if (tristate) {
+            toggle.addClass ('new-tristate');
+
+            let high = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
+            high.addClass ('high');
+            toggle.append (high);
+
+            if (momentary) {
+                high.addClass ('momentary');
+            }
+
+            let low = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
+            low.addClass ('low');
+            toggle.append (low);
+
+            if (momentary) {
+                low.addClass ('momentary');
+            }
+        }
+        else {
+            let input = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
+            toggle.append (input);
+            if (momentary) {
+                input.addClass ('momentary');
+            }
+        }
+
+        let slider = $("<div class='new-slider'></div>");
+        toggle.append (slider);
+    }
+}
+
 window.onload = function () {
+    //
+    // disable the context menu
+    //
+    $(document).on ('contextmenu', function () {
+        return (false);
+    });
+
+    //
+    // add momentary switch behavior
+    //
+    $('input.momentary').each (function () {
+        $(this).on ('change', function () {
+            let input = $(this);
+            if (input.is (':checked')) {
+                setTimeout (function () {
+                    input.prop ('checked', false);
+                }, 100);
+            }
+            else {
+                console.log (2);
+            }
+        });
+    });
+
+    //
+    // define the address bus LEDs and switches
+    //
+    let address = {
+        'name': 'address',
+        'color': 'green',
+        'bits': [
+            {'name': 'A15', 'bit': 15},
+            {'name': 'A14', 'bit': 14},
+            {'name': 'A13', 'bit': 13},
+            {'name': 'A12', 'bit': 12},
+            {'name': 'A11', 'bit': 11},
+            {'name': 'A10', 'bit': 10},
+            {'name': 'A9', 'bit': 9},
+            {'name': 'A8', 'bit': 8},
+            {'name': 'A7', 'bit': 7},
+            {'name': 'A6', 'bit': 6},
+            {'name': 'A5', 'bit': 5},
+            {'name': 'A4', 'bit': 4},
+            {'name': 'A3', 'bit': 3},
+            {'name': 'A2', 'bit': 2},
+            {'name': 'A1', 'bit': 1},
+            {'name': 'A0', 'bit': 0}
+        ]
+    };
+
+    //
+    // define the data bus LEDs and switches
+    //
+    let data = {
+        'name': 'data',
+        'color': 'orange',
+        'bits': [
+            {'name': 'D7', 'bit': 7},
+            {'name': 'D6', 'bit': 6},
+            {'name': 'D5', 'bit': 5},
+            {'name': 'D4', 'bit': 4},
+            {'name': 'D3', 'bit': 3},
+            {'name': 'D2', 'bit': 2},
+            {'name': 'D1', 'bit': 1},
+            {'name': 'D0', 'bit': 0}
+        ]
+    };
+
+    //
+    // define the control LEDs and switches
+    //
+    let controls = {
+        'name': 'controls',
+        'color': 'red',
+        'bits': [
+            {'name': 'E/N', 'bit': 4, 'momentary': true, 'tristate': true},
+            {'name': 'D/N', 'bit': 3, 'momentary': true, 'tristate': true},
+            {'name': 'RST', 'bit': 2, 'momentary': true},
+            {'name': 'R/S', 'bit': 1},
+            {'name': 'SS', 'bit': 0, 'momentary': true}
+        ]
+    };
+
+    //
+    // define the power LED and switch
+    //
+    let power = {
+        'name': 'power',
+        'color': 'red',
+        'bits': [
+            {'name': 'PWR', 'bit': 0}
+        ]
+    };
+
+    //
+    // create the LEDs and switches
+    //
+    create_control ('#address_controls', address);
+    create_control ('#data_controls', data);
+    create_control ('#operating_controls', controls);
+    create_control ('#power_controls', power);
+
+
+
+
+
+
+
+
+
+
+
     return;
     //
     // create global system registers
