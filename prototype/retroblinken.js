@@ -1,4 +1,4 @@
-class PanelControl {
+class Control {
     constructor (config) {
         this._config = config;
 
@@ -7,7 +7,7 @@ class PanelControl {
         this._value = this._config.value;
         this._mask = this._config.mask;
 
-        this.create_control (this._config.selector, this._config);
+        this.create ();
     }
 
     //
@@ -57,7 +57,7 @@ class PanelControl {
         let onbits = 0;
         let offbits = 0;
 
-        $('.bit .toggle input[data-name="' + this._name + '"]').each (function (index, element) {
+        $('.bit .new-switch input[data-name="' + this._name + '"]').each (function (index, element) {
             let input = $(element);
             let data = input.data ();
             let value = 2 ** data.bit;
@@ -67,7 +67,7 @@ class PanelControl {
                     onbits = onbits | value;
                 }
 
-                if (input.hasClass ('temporary')) {
+                if (input.hasClass ('momentary')) {
                     setTimeout (function () {
                         input[0].click ();
                     }, 100);
@@ -87,7 +87,8 @@ class PanelControl {
         self.value = temp;
     }
 
-    create_control () {
+    create () {
+        let self = this;
         let element = $(this._config.selector);
         let bus = this._config.name;
         let color = this._config.color;
@@ -130,6 +131,10 @@ class PanelControl {
                     high.addClass ('momentary');
                 }
 
+                high.on ('change', function () {
+                    self.update ();
+                });
+
                 let low = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
                 low.addClass ('low');
                 toggle.append (low);
@@ -137,6 +142,10 @@ class PanelControl {
                 if (momentary) {
                     low.addClass ('momentary');
                 }
+
+                low.on ('change', function () {
+                    self.update ();
+                });
             }
             else {
                 let input = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
@@ -144,6 +153,10 @@ class PanelControl {
                 if (momentary) {
                     input.addClass ('momentary');
                 }
+
+                input.on ('change', function () {
+                    self.update ();
+                });
             }
 
             let slider = $("<div class='new-slider'></div>");
@@ -166,7 +179,7 @@ window.onload = function () {
     //
     // define the address bus LEDs and switches
     //
-    let address = new PanelControl ({
+    let address = new Control ({
         'selector': '#address_controls',
         'value': 0,
         'mask': 0xffff,
@@ -196,7 +209,7 @@ window.onload = function () {
     //
     // define the data bus LEDs and switches
     //
-    let data = new PanelControl ({
+    let data = new Control ({
         'selector': '#data_controls',
         'value': 0,
         'mask': 0xff,
@@ -218,7 +231,7 @@ window.onload = function () {
     //
     // define the control LEDs and switches
     //
-    let control = new PanelControl ({
+    let control = new Control ({
         'selector': '#operating_controls',
         'value': 0,
         'mask': 0xff,
@@ -237,7 +250,7 @@ window.onload = function () {
     //
     // define the power LED and switch
     //
-    let power = new PanelControl ({
+    let power = new Control ({
         'selector': '#power_controls',
         'value': 0,
         'mask': 0xff,
@@ -360,6 +373,57 @@ window.onload = function () {
 
 
 
+    //
+    // handle the change to run/stop
+    //
+    $('#run_stop').on ('change', function () {
+        let input = $(this);
+        if (input.is (':checked')) {
+            running = true;
+            address.enable (true)
+            address.update ();
+            address.enable (false)
+            execute (global, memory);
+        }
+        else {
+            running = false;
+        }
+    })
+
+    //
+    // handle a request to step one address
+    //
+    $('#single_step').on ('change', function () {
+        if (power.value == 0) {
+            return;
+        }
+
+        let input = $(this);
+        if (input.is (':checked')) {
+            running = true;
+            execute (global, memory);
+        }
+        else {
+            running = false;
+        }
+    });
+
+    //
+    // handle a change to the reset signal
+    //
+    $('#reset').on ('change', function () {
+        if (power.value == 0) {
+            return;
+        }
+
+        let input = $(this);
+        if (!input.is (':checked')) {
+            reset ();
+        }
+    });
+
+
+
 
 
 
@@ -379,51 +443,14 @@ window.onload = function () {
         return (false);
     });
 
-    //
-    // add momentary switch behavior
-    //
-    $('input.momentary').each (function () {
-        $(this).on ('change', function () {
-            let input = $(this);
-            if (input.is (':checked')) {
-                setTimeout (function () {
-                    input.prop ('checked', false);
-                }, 100);
-            }
-            else {
-                console.log (2);
-            }
-        });
-    });
-
-
-
-
-
-
-
-
-
-
-
-
     return;
 
 
 
-    //
-    // FIXME: walk through the addresses
-    //
-    setInterval (function () {
-        data.value = memory[address.value];
-        address.value++;
-    }, 250);
 
 
-    return;
 
 
-if (false) {
     //
     // perform an initial reboot
     //
@@ -521,57 +548,9 @@ if (false) {
         }
     });
 
-    //
-    // handle the change to run/stop
-    //
-    $('#run_stop').on ('change', function () {
-        let input = $(this);
-        if (input.is (':checked')) {
-            running = true;
-            global['address'].enable (true)
-            global['address'].update ();
-            global['address'].enable (false)
-            execute (global, memory);
-        }
-        else {
-            running = false;
-        }
-    })
 
-    //
-    // handle a request to step one address
-    //
-    $('#single_step').on ('change', function () {
-        if (global['power'].value == 0) {
-            return;
-        }
 
-        let input = $(this);
-        if (input.is (':checked')) {
-            running = true;
-            execute (global, memory);
-        }
-        else {
-            running = false;
-        }
-    });
 
-    //
-    // handle a change to the reset signal
-    //
-    $('#reset').on ('change', function () {
-        if (global['power'].value == 0) {
-            return;
-        }
-
-        let input = $(this);
-        if (!input.is (':checked')) {
-            global['address'].value = 0;
-            global['data'].value = memory[global['address'].value];
-        }
-    });
-
-}
 
 
 
