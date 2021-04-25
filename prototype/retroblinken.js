@@ -262,38 +262,6 @@ window.onload = function () {
         ]
     });
 
-    //
-    // fill the memory with chaotic but deterministic values
-    //
-    let seed = 8675309;
-    for (let loop = 0; loop < 2**16; loop++) {
-        seed = seed * 16807 % 2147483647;
-        memory[loop] = seed & 0xff;
-    }
-
-    //
-    // add a small test program to page zero
-    //
-    memory[0x0000 + 0] = 0xdb;
-    memory[0x0000 + 1] = 0xff;
-    memory[0x0000 + 2] = 0xd3;
-    memory[0x0000 + 3] = 0xff;
-    memory[0x0000 + 4] = 0xc3;
-    memory[0x0000 + 5] = 0x00;
-    memory[0x0000 + 6] = 0x00;
-
-    //
-    // add a small test program to page one
-    //
-    memory[0x0100 + 0] = 0xdb;
-    memory[0x0100 + 1] = 0xff;
-    memory[0x0100 + 2] = 0x2f;
-    memory[0x0100 + 3] = 0xd3;
-    memory[0x0100 + 4] = 0xff;
-    memory[0x0100 + 5] = 0xc3;
-    memory[0x0100 + 6] = 0x00;
-    memory[0x0100 + 7] = 0x00;
-
     function reset () {
         //
         // reset the system
@@ -302,6 +270,44 @@ window.onload = function () {
         address.value = 0;
         data.enable (false);
         data.value = 0;
+    }
+
+    function initialize () {
+        //
+        // fill the memory with chaotic but deterministic values
+        //
+        let seed = 8675309;
+        for (let loop = 0; loop < 2**16; loop++) {
+            seed = seed * 16807 % 2147483647;
+            memory[loop] = seed & 0xff;
+        }
+
+        //
+        // add a small test program to page zero
+        //
+        memory[0x0000 + 0] = 0xdb;
+        memory[0x0000 + 1] = 0xff;
+        memory[0x0000 + 2] = 0xd3;
+        memory[0x0000 + 3] = 0xff;
+        memory[0x0000 + 4] = 0xc3;
+        memory[0x0000 + 5] = 0x00;
+        memory[0x0000 + 6] = 0x00;
+
+        //
+        // add a small test program to page one
+        //
+        memory[0x0100 + 0] = 0xdb;
+        memory[0x0100 + 1] = 0xff;
+        memory[0x0100 + 2] = 0x2f;
+        memory[0x0100 + 3] = 0xd3;
+        memory[0x0100 + 4] = 0xff;
+        memory[0x0100 + 5] = 0xc3;
+        memory[0x0100 + 6] = 0x00;
+        memory[0x0100 + 7] = 0x00;
+
+        reset ();
+
+        running = false;
     }
 
     //
@@ -335,9 +341,9 @@ window.onload = function () {
     }
 
     //
-    // reset the system
+    // initialize the system
     //
-    reset ();
+    initialize ();
 
     //
     // handle a change to the power switch
@@ -356,13 +362,11 @@ window.onload = function () {
             control.value = 0;
 
             power.value = 0;
-            running = false;
         }
         else {
-            reset ();
+            initialize ();
 
             power.value = 1;
-            running = false;
 
             control.enable (true);
             control.update ();
