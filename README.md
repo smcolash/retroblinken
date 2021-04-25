@@ -21,11 +21,11 @@ and the experimental version
 A very limited instruction set is currently available. The instructions are based on the
 Intel 8080 processor.
 
-- 00 null operation
-- 31 set stack pointer
-- C3 unconditional jump
-- C9 return from call
-- CD call subroutine
+- 00: null operation
+- 31: set stack pointer
+- C3: unconditional jump
+- C9: return from call
+- CD: call subroutine
 
 All other instruction codes are ignored and are essentially implicit null operations.
 
