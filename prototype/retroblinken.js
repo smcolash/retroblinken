@@ -157,12 +157,16 @@ window.onload = function () {
     // create global system registers
     //
     var running = false;
-    var global = {};
+
+    //
+    // create the system memory
+    //
+    var memory = new Array (2**16);
 
     //
     // define the address bus LEDs and switches
     //
-    global['address'] = new PanelControl ({
+    let address = new PanelControl ({
         'selector': '#address_controls',
         'value': 0,
         'mask': 0xffff,
@@ -192,7 +196,7 @@ window.onload = function () {
     //
     // define the data bus LEDs and switches
     //
-    global['data'] = new PanelControl ({
+    let data = new PanelControl ({
         'selector': '#data_controls',
         'value': 0,
         'mask': 0xff,
@@ -214,7 +218,7 @@ window.onload = function () {
     //
     // define the control LEDs and switches
     //
-    global['control'] = new PanelControl ({
+    let control = new PanelControl ({
         'selector': '#operating_controls',
         'value': 0,
         'mask': 0xff,
@@ -233,11 +237,11 @@ window.onload = function () {
     //
     // define the power LED and switch
     //
-    global['power'] = new PanelControl ({
+    let power = new PanelControl ({
         'selector': '#power_controls',
         'value': 0,
         'mask': 0xff,
-        'enabled': false,
+        'enabled': true,
         'name': 'power',
         'color': 'red',
         'bits': [
@@ -245,24 +249,123 @@ window.onload = function () {
         ]
     });
 
+    function reboot () {
+        // fill the memory with chaotic but deterministic values
+        let seed = 8675309;
+        for (let loop = 0; loop < 2**16; loop++) {
+            seed = seed * 16807 % 2147483647;
+            memory[loop] = seed & 0xff;
+        }
 
+        //
+        // add a small test program to page zero
+        //
+        memory[0x0000 + 0] = 0xdb;
+        memory[0x0000 + 1] = 0xff;
+        memory[0x0000 + 2] = 0xd3;
+        memory[0x0000 + 3] = 0xff;
+        memory[0x0000 + 4] = 0xc3;
+        memory[0x0000 + 5] = 0x00;
+        memory[0x0000 + 6] = 0x00;
 
+        //
+        // add a small test program to page one
+        //
+        memory[0x0100 + 0] = 0xdb;
+        memory[0x0100 + 1] = 0xff;
+        memory[0x0100 + 2] = 0x2f;
+        memory[0x0100 + 3] = 0xd3;
+        memory[0x0100 + 4] = 0xff;
+        memory[0x0100 + 5] = 0xc3;
+        memory[0x0100 + 6] = 0x00;
+        memory[0x0100 + 7] = 0x00;
 
+        //
+        // reset the system
+        //
+        running = false;
+        address.enable (false);
+        address.value = 0;
+        data.enable (false);
+        data.value = 0;
+    }
 
     //
-    // handle the power switch for now...
+    // execute the currently addressed instruction
+    //
+    function execute (g, m) {
+        if (power.value == 0) {
+            return;
+        }
+
+        if (!running) {
+            return;
+        }
+
+        data.value = memory[address.value];
+        address.value++;
+
+        let opcode = data.value;
+        if (opcode == 0xc3) {
+            let address = memory[address.value] +
+                memory[address.value + 1] * 256;
+            address.value = address;
+        }
+
+        let tick = 250;
+        //tick = 50; // add turbo mode?
+        if ($('#run_stop').is (':checked')) {
+            setTimeout (function () {
+                execute (g, m);
+            }, tick);
+        }
+    }
+
+    //
+    // reboot the system
+    //
+    reboot ();
+
+    //
+    // handle a change to the power switch
     //
     $($('.new-switch input[data-name=power][data-bit=0]')[0]).on ('change', function () {
-        let element = $(this);
-        let led = $($('.led[data-name=power][data-bit=0]')[0]);
+        let input = $(this);
 
-        if (element.is (':checked')) {
-            led.addClass ('on');
+        if (!input.is (':checked')) {
+            address.enable (false);
+            address.value = 0;
+
+            data.enable (false);
+            data.value = 0;
+
+            control.enable (false);
+            control.value = 0;
+
+            power.value = 0;
+            running = false;
         }
         else {
-            led.removeClass ('on');
+            reboot ();
+
+            power.value = 1;
+            running = false;
+
+            data.value = memory[address.value];
+
+            control.enable (true);
+            control.update ();
         }
     });
+
+
+
+
+
+
+
+
+
 
 
 
@@ -304,158 +407,27 @@ window.onload = function () {
 
 
 
+    return;
 
 
-setInterval (function () {
-    global['address'].value++;
-}, 250);
 
-
+    //
+    // FIXME: walk through the addresses
+    //
+    setInterval (function () {
+        data.value = memory[address.value];
+        address.value++;
+    }, 250);
 
 
     return;
 
-    //
-    // initialize the system memory
-    //
-    var memory = new Array (2**16);
-
-    function reboot () {
-        // fill the memory with chaotic but deterministic values
-        let seed = 8675309;
-        for (let loop = 0; loop < 2**16; loop++) {
-            seed = seed * 16807 % 2147483647;
-            memory[loop] = seed & 0xff;
-        }
-
-        //
-        // add a small test program to page zero
-        //
-        memory[0x0000 + 0] = 0xdb;
-        memory[0x0000 + 1] = 0xff;
-        memory[0x0000 + 2] = 0xd3;
-        memory[0x0000 + 3] = 0xff;
-        memory[0x0000 + 4] = 0xc3;
-        memory[0x0000 + 5] = 0x00;
-        memory[0x0000 + 6] = 0x00;
-
-        //
-        // add a small test program to page one
-        //
-        memory[0x0100 + 0] = 0xdb;
-        memory[0x0100 + 1] = 0xff;
-        memory[0x0100 + 2] = 0x2f;
-        memory[0x0100 + 3] = 0xd3;
-        memory[0x0100 + 4] = 0xff;
-        memory[0x0100 + 5] = 0xc3;
-        memory[0x0100 + 6] = 0x00;
-        memory[0x0100 + 7] = 0x00;
-
-        //
-        // reset the system
-        //
-        running = false;
-        global['address'].enable (false);
-        global['address'].value = 0;
-        global['data'].enable (false);
-        global['data'].value = 0;
-    }
-
-    //
-    // saving this for later
-    //
-    function speak (text) {
-        try {
-            var utterance = new SpeechSynthesisUtterance (text);
-            window.speechSynthesis.speak (utterance);
-        }
-        catch {
-        }
-    }
 
 if (false) {
     //
     // perform an initial reboot
     //
     reboot ();
-
-    //
-    // execute the currently addressed instruction
-    //
-    function execute (g, m) {
-        if (global['power'].value == 0) {
-            return;
-        }
-
-        if (!running) {
-            return;
-        }
-
-        global['data'].value = memory[global['address'].value];
-        global['address'].value++;
-
-        let opcode = global['data'].value;
-        if (opcode == 0xc3) {
-            let address = memory[global['address'].value] +
-                memory[global['address'].value + 1] * 256;
-            global['address'].value = address;
-        }
-
-        if (false) {
-            if (Math.trunc ((Math.random () * 16)) == 0) {
-                global['address'].value = Math.trunc ((Math.random () * 256)) * 256;
-            }
-        }
-
-        let tick = 250;
-        //tick = 50; // add turbo mode?
-        if ($('#run_stop').is (':checked')) {
-            setTimeout (function () {
-                execute (g, m);
-            }, tick);
-        }
-    }
-
-    //
-    // handle a change to the power switch
-    //
-    $('#power').on ('change', function () {
-        let power = $(this);
-
-        global['control'].enable (true);
-        global['power'].enable (true);
-
-        if (!power.is (':checked')) {
-            for (let item in global) {
-                global[item].enable (false);
-            }
-
-            global['power'].value = 0;
-            running = false;
-
-            global['address'].value = 0;
-            global['data'].value = 0;
-            global['control'].value = 0;
-            running = false;
-        }
-        else {
-            reboot ();
-
-            global['power'].value = 1;
-            running = false;
-
-            //global['address'].enable ()
-            //global['address'].update ()
-            //global['address'].value = 0;
-
-            //global['data'].enable ()
-            //global['data'].update ()
-            global['data'].value = memory[global['address'].value];
-
-            global['control'].update ();
-
-        }
-    });
 
     //
     // handle a request to examine and step one address
