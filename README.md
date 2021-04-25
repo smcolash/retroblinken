@@ -25,11 +25,11 @@ Steps:
 - power on
 - R/S
 
-'''
+```
 0000 DB FF
 0002 D3 FF
 0004 C3 00 00
-'''
+```
 
 Running from address 0x0100 will run the second program, which will jump back to
 the first program.
@@ -39,9 +39,9 @@ Steps:
 - set address switch A8.
 = R/S
 
-'''
+```
 0010 DB FF
 0012 2F
 0013 D3 FF
 0015 C3 00 00
-'''
+```
