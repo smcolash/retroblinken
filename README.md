@@ -37,7 +37,7 @@ the first program.
 Steps:
 - power on
 - set address switch A8.
-= R/S
+- R/S
 
 ```
 0010 DB FF
