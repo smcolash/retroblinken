@@ -28,7 +28,7 @@ the other at 0x0100. These test programs are taken from page 35 of the original
 
 0100 DB FF      test2       in   ffh      ; read IO port ffh into register A
 0102 2F                     cma           ; invert the bits in register A
-0103 D3 FF                  out  ffh      ; write register A to IO port ff h
+0103 D3 FF                  out  ffh      ; write register A to IO port ffh
 0105 C3 00 00               jmp  test1    ; jump to address 0000h
 ```
 
