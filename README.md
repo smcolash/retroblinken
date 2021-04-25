@@ -1,12 +1,12 @@
 # retroblinken
 HTML/JavaScript imagining of an early 80's S-100 computer.
 
-See stable version [https://smcolash.github.io/retroblinken/](here) or rack-mounted
-[https://smcolash.github.io/retroblinken/rack.html](here)
+See stable version [here](https://smcolash.github.io/retroblinken/) or rack-mounted
+[here](https://smcolash.github.io/retroblinken/rack.html)
 and the experimental version
-[https://smcolash.github.io/retroblinken/prototype/index.html](here)
+[here](https://smcolash.github.io/retroblinken/prototype/index.html)
 or rackmounted
-[https://smcolash.github.io/retroblinken/prototype/rack.html](here).
+[here](https://smcolash.github.io/retroblinken/prototype/rack.html).
 
 - PWR controls power to the computer.
 - R/S toggles between stopped and running states.
