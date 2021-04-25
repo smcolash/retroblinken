@@ -165,16 +165,114 @@ class Control {
     }
 }
 
+class Processor {
+    constructor () {
+        this.registers = {
+            'a': 0,
+            'f': {
+                's': 0,
+                'z': 0,
+                'a': 0,
+                'p': 0,
+                'c': 0
+            },
+            'b': 0,
+            'c': 0,
+            'd': 0,
+            'e': 0,
+            'h': 0,
+            'l': 0,
+            'pc': 0,
+            'sp': 0
+        };
+
+        this.memory = new Array (2**16);
+        this.io = new Array (2**8);
+        this.ticks = 250;
+
+        /*
+        this.opcodes = {
+            0x00: {},
+            0x2f: {},
+            0xc3: {},
+            0xd3, {},
+            0xdb: {},
+            0xff: {}
+        };
+        */
+
+        this.initialize ();
+    }
+
+    clear (item = this.registers) {
+        Object.keys (item).forEach (key => {
+            if (typeof (item[key]) === 'number') {
+                item[key] = 0;
+            }
+            else {
+                this.clear (item[key]);
+            }
+        });
+    }
+
+    initialize () {
+        //
+        // fill the memory with chaotic but deterministic values
+        //
+        let seed = 8675309;
+        for (let loop = 0; loop < 2**16; loop++) {
+            seed = seed * 16807 % 2147483647;
+            this.memory[loop] = seed & 0xff;
+        }
+
+        //
+        // add a small test program to page zero
+        //
+        this.memory[0x0000 + 0] = 0xdb;
+        this.memory[0x0000 + 1] = 0xff;
+        this.memory[0x0000 + 2] = 0xd3;
+        this.memory[0x0000 + 3] = 0xff;
+        this.memory[0x0000 + 4] = 0xc3;
+        this.memory[0x0000 + 5] = 0x00;
+        this.memory[0x0000 + 6] = 0x00;
+
+        //
+        // add a small test program to page one
+        //
+        this.memory[0x0100 + 0] = 0xdb;
+        this.memory[0x0100 + 1] = 0xff;
+        this.memory[0x0100 + 2] = 0x2f;
+        this.memory[0x0100 + 3] = 0xd3;
+        this.memory[0x0100 + 4] = 0xff;
+        this.memory[0x0100 + 5] = 0xc3;
+        this.memory[0x0100 + 6] = 0x00;
+        this.memory[0x0100 + 7] = 0x00;
+
+        //
+        // reset everuthing else
+        //
+        this.reset ();
+    }
+
+    reset () {
+        this.clear ();
+    }
+
+    step () {
+        this.registers.pc = (this.registers.pc + 1) & 0xffff;
+    }
+}
+
 window.onload = function () {
+    //
+    // create the CPU model
+    //
+    let cpu = new Processor ();
+
     //
     // create global system registers
     //
     var running = false;
-
-    //
-    // create the system memory
-    //
-    var memory = new Array (2**16);
 
     //
     // define the address bus LEDs and switches
@@ -268,46 +366,11 @@ window.onload = function () {
         //
         address.enable (false);
         address.value = 0;
+
         data.enable (false);
         data.value = 0;
-    }
 
-    function initialize () {
-        //
-        // fill the memory with chaotic but deterministic values
-        //
-        let seed = 8675309;
-        for (let loop = 0; loop < 2**16; loop++) {
-            seed = seed * 16807 % 2147483647;
-            memory[loop] = seed & 0xff;
-        }
-
-        //
-        // add a small test program to page zero
-        //
-        memory[0x0000 + 0] = 0xdb;
-        memory[0x0000 + 1] = 0xff;
-        memory[0x0000 + 2] = 0xd3;
-        memory[0x0000 + 3] = 0xff;
-        memory[0x0000 + 4] = 0xc3;
-        memory[0x0000 + 5] = 0x00;
-        memory[0x0000 + 6] = 0x00;
-
-        //
-        // add a small test program to page one
-        //
-        memory[0x0100 + 0] = 0xdb;
-        memory[0x0100 + 1] = 0xff;
-        memory[0x0100 + 2] = 0x2f;
-        memory[0x0100 + 3] = 0xd3;
-        memory[0x0100 + 4] = 0xff;
-        memory[0x0100 + 5] = 0xc3;
-        memory[0x0100 + 6] = 0x00;
-        memory[0x0100 + 7] = 0x00;
-
-        reset ();
-
-        running = false;
+        cpu.reset ();
     }
 
     //
@@ -322,28 +385,22 @@ window.onload = function () {
             return;
         }
 
-        data.value = memory[address.value++];
+        data.value = cpu.memory[address.value++];
 
         let opcode = data.value;
         if (opcode == 0xc3) {
-            let value = memory[address.value] +
-                memory[address.value + 1] * 256;
+            let value = cpu.memory[address.value] +
+                cpu.memory[address.value + 1] * 256;
             address.value = value;
         }
 
-        let tick = 150;
-        //tick = 50; // add turbo mode?
+        let tick = cpu.ticks;
         if (running) {
             setTimeout (function () {
                 step ();
             }, tick);
         }
     }
-
-    //
-    // initialize the system
-    //
-    initialize ();
 
     //
     // handle a change to the power switch
@@ -364,7 +421,7 @@ window.onload = function () {
             power.value = 0;
         }
         else {
-            initialize ();
+            cpu.initialize ();
 
             power.value = 1;
 
@@ -385,9 +442,11 @@ window.onload = function () {
         let input = $(this);
         if (input.is (':checked')) {
             running = true;
+
             address.enable (true)
             address.update ();
             address.enable (false)
+
             step ();
         }
         else {
@@ -444,10 +503,12 @@ window.onload = function () {
 
         let input = $(this);
         if (input.is (':checked')) {
+
             address.enable (true);
             address.update ();
             address.enable (false);
-            data.value = memory[address.value];
+
+            data.value = cpu.memory[address.value];
         }
     });
 
@@ -466,7 +527,7 @@ window.onload = function () {
         let input = $(this);
         if (input.is (':checked')) {
             address.value++;
-            data.value = memory[address.value];
+            data.value = cpu.memory[address.value];
         }
     });
 
@@ -490,7 +551,7 @@ window.onload = function () {
             data.update ()
             data.enable (false)
 
-            memory[address.value] = data.value;
+            cpu.memory[address.value] = data.value;
         }
     });
 
@@ -512,7 +573,7 @@ window.onload = function () {
             data.update ()
             data.enable (false)
 
-            memory[address.value++] = data.value;
+            cpu.memory[address.value++] = data.value;
         }
     });
 
