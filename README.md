@@ -7,12 +7,29 @@ and the experimental version
 [here](https://smcolash.github.io/retroblinken/prototype/index.html)
 ([or rack-mounted](https://smcolash.github.io/retroblinken/prototype/rack.html)).
 
+# Controls
+
 - PWR controls power to the computer.
 - R/S toggles between stopped and running states.
 - SS executes one instruction and stops..
 - RST resets the address counter when running or when stopped.
 - E/N examines the address set by the switches (up) or increments the address counter (down).
 - D/N deposits the data set by the switches at the current address or does the same and increments the address counter.
+
+# Instruction Set
+
+A very limited instruction set is currently available. The instructions are based on the
+Intel 8080 processor.
+
+00 null operation
+31 set stack pointer
+C3 unconditional jump
+C9 return from call
+CD call subroutine
+
+All other instruction codes are ignored and are essentially implicit null operations.
+
+# Examples
 
 The memory is initialized on power-up to a repeatable but chaotic sequence of bytes.
 Once initialized, two short test programs are written to memory, one at 0x0000 and
@@ -68,4 +85,3 @@ Method 2:
 - set the data switches to 0x0000 (all off)
 - toggle the D/N switch DOWN once
 - R/S
-

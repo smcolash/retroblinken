@@ -238,6 +238,26 @@ class Processor {
         this.memory[0x0100 + 5] = 0xc3;
         this.memory[0x0100 + 6] = 0x00;
         this.memory[0x0100 + 7] = 0x00;
+
+        //
+        // add a program that calls a subroutine
+        //
+        this.memory[0x0200 + 0]= 0x31;
+        this.memory[0x0200 + 1]= 0xff;
+        this.memory[0x0200 + 2]= 0xff;
+        this.memory[0x0200 + 3]= 0xcd;
+        this.memory[0x0200 + 4]= 0x00;
+        this.memory[0x0200 + 5]= 0x03;
+        this.memory[0x0200 + 6]= 0xc3;
+        this.memory[0x0200 + 7]= 0x03;
+        this.memory[0x0200 + 8]= 0x02;
+
+        //
+        // add the subroutine
+        //
+        this.memory[0x0300 + 0] = 0x00;
+        this.memory[0x0300 + 1] = 0x00;
+        this.memory[0x0300 + 2] = 0xc9;
     }
 
     initialize () {
@@ -263,10 +283,11 @@ class Processor {
 
     reset () {
         this.clear ();
+        this.registers.sp = 0xffff;
     }
 
     fetch8 () {
-        let temp = this.memory[this.registers.pc];
+        let temp = this.memory[this.registers.pc] & 0xff;
         this.registers.pc = (this.registers.pc + 1) & 0xffff;
 
         return (temp);
@@ -276,7 +297,32 @@ class Processor {
         let low = this.fetch8 ();
         let high = this.fetch8 ();
 
-        return ((high * 256) + low);
+        return ((high << 8) + low);
+    }
+
+    push8 (value) {
+        this.memory[this.registers.sp] = (value & 0xff);
+        this.registers.sp = (this.registers.sp - 1) & 0xffff;
+    }
+
+    push16 (value) {
+        let low = value & 0x00ff;
+        let high = (value & 0xff00) >> 8;
+
+        this.push8 (high);
+        this.push8 (low);
+    }
+
+    pop8 () {
+        this.registers.sp = (this.registers.sp + 1) & 0xffff;
+        return (this.memory[this.registers.sp]);
+    }
+
+    pop16 () {
+        let low = this.pop8 ();
+        let high = this.pop8 ();
+
+        return ((high << 8) + low);
     }
 
     step () {
@@ -288,8 +334,28 @@ class Processor {
         //
         // process the instruction
         //
-        if (opcode == 0xc3) {
-            this.registers.pc = this.fetch16 ();
+        switch (opcode) {
+            case 0x00:
+                // null operation
+                break;
+            case 0x31:
+                // set the stack pointer
+                this.registers.sp = this.fetch16 ();
+                break;
+            case 0xc3:
+                // jump to address
+                this.registers.pc = this.fetch16 ();
+                break;
+            case 0xc9:
+                // return from subroutine
+                this.registers.pc = this.pop16 ();
+                break;
+            case 0xcd:
+                // call subroutine at address
+                let temp = this.fetch16 ();
+                this.push16 (this.registers.pc);
+                this.registers.pc = temp;
+                break;
         }
     }
 }
