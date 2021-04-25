@@ -63,6 +63,7 @@ the other at 0x0100. These test programs are taken from page 35 of the original
 0302 C9                     ret              ; return
 ```
 
+## Example 1
 Running from address 0x0000 (e.g. reset) will run the first program. This program
 s an endless loop that executes a few simple instructions and then jumps back to
 address 0x0000.
@@ -71,6 +72,7 @@ address 0x0000.
 - set the address switches 0x0000 (all off)
 - R/S
 
+## Example 2
 Running from address 0x0100 will run the second program, which will then jump 
 back to the first program at 0x0000.
 
@@ -78,18 +80,19 @@ back to the first program at 0x0000.
 - set the address switches to 0x0100 (all off except for A8)
 - R/S
 
-Finally, modifying the jump instruction at address 0x0004 to be a NOP (opcode 0x00)
+## Example 3
+Modifying the jump instruction at address 0x0004 to be a NOP (opcode 0x00)
 will allow the processor to keep running into the randomized data starting at
 0x0007. Either of the two methods will achieve the same result.
 
-Method 1:
+### Method 1
 - power on or reset
 - set the address switches to 0x0004 (all off except for A2)
 - set the data switches to 0x0000 (all off)
 - toggle the D/N switch UP once
 - R/S
 
-Method 2:
+### Method 2
 - power on or reset
 - set the address switches to 0x0000 (all off except)
 - toggle the E/N switch UP once to examine the specified address
@@ -97,3 +100,13 @@ Method 2:
 - set the data switches to 0x0000 (all off)
 - toggle the D/N switch DOWN once
 - R/S
+
+## Example 4
+Running from address 0x0200 will run the third program which sets the stack pointer,
+calls a subroutine and then loops. The subrouting, at 0x0300, executes two null
+operations the returns.
+
+- power on or reset
+- set the address switches to 0x0200 (all off except for A9)
+- R/S
+
