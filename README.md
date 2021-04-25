@@ -37,12 +37,12 @@ s an endless loop that executes a few simple instructions and then jumps back to
 address 0x0000.
 
 - power on or reset
-- make sure the address switches are set to 0x0000 (all off)
+- set the address switches 0x0000 (all off)
 - R/S
 
 Running from address 0x0100 will run the second program, which will then jump 
 back to the first program at 0x0000.
 
 - power on or reset
-- make sure the address switches are set to 0x0100 (all off except for A8)
+- set the address switches to 0x0100 (all off except for A8)
 - R/S
