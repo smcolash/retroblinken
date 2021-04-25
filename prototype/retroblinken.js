@@ -57,7 +57,7 @@ class Control {
         let onbits = 0;
         let offbits = 0;
 
-        $('.bit .new-switch input[data-name="' + this._name + '"]').each (function (index, element) {
+        $('.bit .switch input[data-name="' + this._name + '"]').each (function (index, element) {
             let input = $(element);
             let data = input.data ();
             let value = 2 ** data.bit;
@@ -117,11 +117,11 @@ class Control {
             let led = $("<div data-bit=" + bit + " data-name='" + bus + "' class='led " + color + "'></div>");
             outer.append (led);
 
-            let toggle = $("<div class='new-switch'>");
+            let toggle = $("<div class='switch'>");
             outer.append (toggle);
 
             if (tristate) {
-                toggle.addClass ('new-tristate');
+                toggle.addClass ('tristate');
 
                 let high = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
                 high.addClass ('high');
@@ -159,7 +159,7 @@ class Control {
                 });
             }
 
-            let slider = $("<div class='new-slider'></div>");
+            let slider = $("<div class='slider'></div>");
             toggle.append (slider);
         }
     }
@@ -327,7 +327,6 @@ window.onload = function () {
 
         let tick = 150;
         //tick = 50; // add turbo mode?
-        //if ($($('.new-switch input[data-name=controls][data-bit=1]')[0]).is (':checked')) {
         if (running) {
             setTimeout (function () {
                 step ();
@@ -343,7 +342,7 @@ window.onload = function () {
     //
     // handle a change to the power switch
     //
-    $($('.new-switch input[data-name=power][data-bit=0]')[0]).on ('change', function () {
+    $($('.switch input[data-name=power][data-bit=0]')[0]).on ('change', function () {
         let input = $(this);
 
         if (!input.is (':checked')) {
@@ -373,7 +372,7 @@ window.onload = function () {
     //
     // handle the change to run/stop
     //
-    $($('.new-switch input[data-name=controls][data-bit=1]')[0]).on ('change', function () {
+    $($('.switch input[data-name=controls][data-bit=1]')[0]).on ('change', function () {
         let input = $(this);
         if (input.is (':checked')) {
             running = true;
@@ -390,7 +389,7 @@ window.onload = function () {
     //
     // handle a request to step one address
     //
-    $($('.new-switch input[data-name=controls][data-bit=0]')[0]).on ('change', function () {
+    $($('.switch input[data-name=controls][data-bit=0]')[0]).on ('change', function () {
         if (power.value == 0) {
             return;
         }
@@ -411,7 +410,7 @@ window.onload = function () {
     //
     // handle a change to the reset signal
     //
-    $($('.new-switch input[data-name=controls][data-bit=2]')[0]).on ('change', function () {
+    $($('.switch input[data-name=controls][data-bit=2]')[0]).on ('change', function () {
         if (power.value == 0) {
             return;
         }
@@ -425,7 +424,7 @@ window.onload = function () {
     //
     // handle a request to examine and step one address
     //
-    $($('.new-switch input.high[data-name=controls][data-bit=4]')[0]).on ('change', function () {
+    $($('.switch input.high[data-name=controls][data-bit=4]')[0]).on ('change', function () {
         if (power.value == 0) {
             return;
         }
@@ -446,7 +445,7 @@ window.onload = function () {
     //
     // handle a request to step one address
     //
-    $($('.new-switch input.low[data-name=controls][data-bit=4]')[0]).on ('change', function () {
+    $($('.switch input.low[data-name=controls][data-bit=4]')[0]).on ('change', function () {
         if (power.value == 0) {
             return;
         }
@@ -465,7 +464,7 @@ window.onload = function () {
     //
     // handle a request to modify and step one address
     //
-    $($('.new-switch input.high[data-name=controls][data-bit=3]')[0]).on ('change', function () {
+    $($('.switch input.high[data-name=controls][data-bit=3]')[0]).on ('change', function () {
         if (power.value == 0) {
             return;
         }
@@ -489,7 +488,7 @@ window.onload = function () {
     //
     // handle a request to step one address
     //
-    $($('.new-switch input.low[data-name=controls][data-bit=3]')[0]).on ('change', function () {
+    $($('.switch input.low[data-name=controls][data-bit=3]')[0]).on ('change', function () {
         if (power.value == 0) {
             return;
         }

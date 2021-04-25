@@ -26,7 +26,19 @@
     <body>
 
 
-        <div class='container' style='font-size: 2.5vw;'>
+        <div class='container-fluid' style='font-size: 2.5vw;'>
+            <div class='d-flex flex-row justify-content-center'>
+                <div style="height: 3em; width: 100%; text-align: end;">
+                    M-100
+                </div>
+            </div>
+            <div class='d-flex flex-row justify-content-center'>
+                <div style="width: 100%; text-align: end;">
+                    [currently debugging switches on mobile...]
+                </div>
+            </div>
+
+
             <div class='d-flex flex-row justify-content-center'>
 
                 <div class='p-2 control'>
@@ -442,7 +454,6 @@
         </div>
 
 <!--
--->
 
 <style>
 .rack {
@@ -526,6 +537,7 @@
 
 
 </style>
+-->
 
 <!--
 7 x 17 x 19 1/2 in.
@@ -541,7 +553,7 @@ flange = 0.625"
 
 <!--
 
-        <div class='container' style='font-size: 16pt; margin-top: 1em;'>
+        <div class='container-fluid' style='font-size: 16pt; margin-top: 1em;'>
 
             <div class='d-flex flex-row justify-content-center'>
                 <div class="flange">
@@ -570,7 +582,7 @@ flange = 0.625"
 
 
 
-        <div class='container' style='font-size: 8pt;'>
+        <div class='container-fluid' style='font-size: 8pt;'>
             <div class='d-flex flex-row justify-content-center'>
 
                 <div class='p-2 control'>

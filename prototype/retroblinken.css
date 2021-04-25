@@ -78,7 +78,7 @@ body {
     _border: 1px solid red;
 }
 
-.new-switch {
+.switch {
     display: block;
     position: relative;
     user-select: none;
@@ -90,7 +90,7 @@ body {
     margin: 0.125em;
 }
 
-.new-slider {
+.slider {
     height:1em;
     width: 1em;
     border-radius: inherit;
@@ -100,7 +100,7 @@ body {
     margin: 0.25em;
 }
 
-.new-switch input {
+.switch input {
     cursor: pointer;
     position: absolute;
     opacity: 0;
@@ -109,28 +109,28 @@ body {
     height: 100%;
 }
 
-.new-switch input:checked ~ .new-slider {
+.switch input:checked ~ .slider {
     top: 0em;
 }
 
-.new-tristate {
+.tristate {
     height: 3.5em;
 }
 
-.new-switch input.high {
+.switch input.high {
     height: 50%;
     top: 0px;
 }
 
-.new-switch input.high:checked ~ .new-slider {
+.switch input.high:checked ~ .slider {
     top: 0em;
 }
 
-.new-switch input.low {
+.switch input.low {
     height: 50%;
     bottom: 0px;
 }
 
-.new-switch input.low:checked ~ .new-slider {
+.switch input.low:checked ~ .slider {
     top: 2em;
 }
