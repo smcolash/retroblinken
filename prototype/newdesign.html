@@ -264,15 +264,15 @@ body {
 
 
 
-                    <div id='A15' class='bit'>
-                        <div class='label'><div class='text'>A15</div></div>
-                        <div data-bit=15 data-name='address' class='led green'></div>
-                        <div class='new-switch tristate'>
-                            <input type='checkbox' class='high temporary' data-bit=15 data-name='address'>
-                            <input type='checkbox' class='low temporary' data-bit=15 data-name='address'>
-                            <div class='new-slider'></div>
-                        </div>
-                    </div>
+            <div id='A15' class='bit'>
+                <div class='label'><div class='text'>A15</div></div>
+                <div data-bit=15 data-name='address' class='led green'></div>
+                <div class='new-switch tristate'>
+                    <input type='checkbox' class='high momentary' data-bit=15 data-name='address'>
+                    <input type='checkbox' class='low momentary' data-bit=15 data-name='address'>
+                    <div class='new-slider'></div>
+                </div>
+            </div>
 
 
 
@@ -327,6 +327,10 @@ body {
 
                 if (tristate) {
                     toggle.addClass ('tristate');
+                }
+
+                if (momentary) {
+                    input.addClass ('momentary');
                 }
 
 
@@ -413,18 +417,28 @@ let power = {
 
         // disable the context menu
         $(document).on ('contextmenu', function () {
-            console.log ('context');
             return (false);
         });
 
-        // handle the power switch
-        $('#power').on ('change', function () {
-            console.log ('change');
-            let element = $(this);
-            let led = $('#asdf');
+        // add the momentary switch behavior
+        $('input.momentary').each (function () {
+            $(this).on ('change', function () {
+                let input = $(this);
+                if (input.is (':checked')) {
+                    setTimeout (function () {
+                        input.prop ('checked', false);
+                    }, 100);
+                }
+                else {
+                    console.log (2);
+                }
+            });
+        });
 
-            console.log (element);
-            console.log (led);
+        // handle the power switch
+        $($('.new-switch input[data-name=power][data-bit=0]')[0]).on ('change', function () {
+            let element = $(this);
+            let led = $($('.led[data-name=power][data-bit=0]')[0]);
 
             if (element.is (':checked')) {
                 led.addClass ('on');
