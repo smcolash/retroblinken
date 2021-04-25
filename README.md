@@ -9,7 +9,6 @@ https://smcolash.github.io/retroblinken/prototype/index.html.
 - R/S toggles between stopped and running states.
 - SS executes one instruction and stops..
 - RST resets the address counter when running or when stopped.
-
 - E/N examines the address set by the switches (up) or increments the address counter (down).
 - D/N deposits the data set by the switches at the current address or does the same and increments the address counter.
 
@@ -26,8 +25,8 @@ Steps:
 - R/S
 
 ```
-0000 DB FF      IN   0xff     ; read IO address 0xff into register A
-0002 D3 FF      OUT  0xff     ; write register A to IO address 0xff
+0000 DB FF      IN   0xff     ; read IO port 0xff into register A
+0002 D3 FF      OUT  0xff     ; write register A to IO port 0xff
 0004 C3 00 00   JMP  0x0000   ; jump to address 0x0000
 ```
 
@@ -40,8 +39,8 @@ Steps:
 - R/S
 
 ```
-0010 DB FF      IN   0xff     ; read IO address 0xff into register A
+0010 DB FF      IN   0xff     ; read IO port 0xff into register A
 0012 2F         CMA           ; invert the bits in register A
-0013 D3 FF      OUT  0xff     ; write register A to IO address 0xff 
+0013 D3 FF      OUT  0xff     ; write register A to IO port 0xff 
 0015 C3 00 00   JMP  0x0000   ; jump to address 0x0000
 ```
