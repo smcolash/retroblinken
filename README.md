@@ -3,7 +3,7 @@ HTML/JavaScript imagining of an early 80's S-100 computer.
 
 See live version of the stable version at https://smcolash.github.io/retroblinken/
 and the live version of the experimental version at 
-https://smcolash.github.io/retroblinken/prototype/.
+https://smcolash.github.io/retroblinken/prototype/index.html.
 
 - PWR controls power to the computer.
 - R/S toggles between stopped and running states.
