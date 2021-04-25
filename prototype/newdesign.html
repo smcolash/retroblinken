@@ -134,21 +134,32 @@ body {
     height: 100%;
 }
 
-.new-switch input:checked {
-    top: 0em;
-}
-
 .new-switch input:checked ~ .new-slider {
-    top: 0em;
-}
-
-.new-switch .new-slider ~ input:checked {
     top: 0em;
 }
 
 .new-tristate {
     height: 3em;
 }
+
+.new-switch input.high {
+    height: 50%;
+    top: 0px;
+}
+
+.new-switch input.high:checked ~ .new-slider {
+    top: 0em;
+}
+
+.new-switch input.low {
+    height: 50%;
+    bottom: 0px;
+}
+
+.new-switch input.low:checked ~ .new-slider {
+    top: 2em;
+}
+
 
 
 
@@ -260,22 +271,6 @@ body {
                 </div>
             </div>
 
-
-
-
-
-            <div id='A15' class='bit'>
-                <div class='label'><div class='text'>A15</div></div>
-                <div data-bit=15 data-name='address' class='led green'></div>
-                <div class='new-switch tristate'>
-                    <input type='checkbox' class='high momentary' data-bit=15 data-name='address'>
-                    <input type='checkbox' class='low momentary' data-bit=15 data-name='address'>
-                    <div class='new-slider'></div>
-                </div>
-            </div>
-
-
-
         </div>
 
     </body>
@@ -293,6 +288,16 @@ body {
                 let bit = item.bit;
                 let name = item.name;
 
+                let tristate = false;
+                if ('tristate' in item) {
+                    tristate = item.tristate;
+                }
+
+                let momentary = false;
+                if ('momentary' in item) {
+                    momentary = item.momentary;
+                }
+
                 let outer = $("<div id='" + name + "' class='bit'>");
                 element.append (outer);
 
@@ -305,34 +310,35 @@ body {
                 let toggle = $("<div class='new-switch'>");
                 outer.append (toggle);
 
-                let input = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
-                toggle.append (input);
+                if (tristate) {
+                    toggle.addClass ('tristate');
+
+                    let high = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
+                    high.addClass ('high');
+                    toggle.append (high);
+
+                    if (momentary) {
+                        high.addClass ('momentary');
+                    }
+
+                    let low = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
+                    low.addClass ('low');
+                    toggle.append (low);
+
+                    if (momentary) {
+                        low.addClass ('momentary');
+                    }
+                }
+                else {
+                    let input = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
+                    toggle.append (input);
+                    if (momentary) {
+                        input.addClass ('momentary');
+                    }
+                }
 
                 let slider = $("<div class='new-slider'></div>");
                 toggle.append (slider);
-
-
-
-
-                let tristate = false;
-                if ('tristate' in item) {
-                    tristate = item.tristate;
-                }
-
-                let momentary = false;
-                if ('momentary' in item) {
-                    momentary = item.momentary;
-                }
-
-
-                if (tristate) {
-                    toggle.addClass ('tristate');
-                }
-
-                if (momentary) {
-                    input.addClass ('momentary');
-                }
-
 
                 /*
                     <div id='A15' class='bit'>
@@ -343,6 +349,16 @@ body {
                             <div class='new-slider'></div>
                         </div>
                     </div>
+
+            <div id='A15' class='bit'>
+                <div class='label'><div class='text'>A15</div></div>
+                <div data-bit=15 data-name='address' class='led green'></div>
+                <div class='new-switch tristate'>
+                    <input type='checkbox' class='high momentary' data-bit=15 data-name='address'>
+                    <input type='checkbox' class='low momentary' data-bit=15 data-name='address'>
+                    <div class='new-slider'></div>
+                </div>
+            </div>
                  */
             }
         }
@@ -417,7 +433,7 @@ let power = {
 
         // disable the context menu
         $(document).on ('contextmenu', function () {
-            return (false);
+            //return (false);
         });
 
         // add the momentary switch behavior
