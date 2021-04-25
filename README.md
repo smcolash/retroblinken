@@ -48,3 +48,24 @@ back to the first program at 0x0000.
 - power on or reset
 - set the address switches to 0x0100 (all off except for A8)
 - R/S
+
+Finally, modifying the jump instruction at address 0x0004 to be a NOP (opcode 0x00)
+will allow the processor to keep running into the randomized data starting at
+0x0007. Either of the two methods will achieve the same result.
+
+Method 1:
+- power on or reset
+- set the address switches to 0x0004 (all off except for A2)
+- set the data switches to 0x0000 (all off)
+- toggle the D/N switch UP once
+- R/S
+
+Method 2:
+- power on or reset
+- set the address switches to 0x0000 (all off except)
+- toggle the E/N switch UP once to examine the specified address
+- toggle the E/N switch DOWN 4 times to reach the 0x0004 address
+- set the data switches to 0x0000 (all off)
+- toggle the D/N switch DOWN once
+- R/S
+
