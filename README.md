@@ -21,11 +21,11 @@ and the experimental version
 A very limited instruction set is currently available. The instructions are based on the
 Intel 8080 processor.
 
-00 null operation
-31 set stack pointer
-C3 unconditional jump
-C9 return from call
-CD call subroutine
+- 00 null operation
+- 31 set stack pointer
+- C3 unconditional jump
+- C9 return from call
+- CD call subroutine
 
 All other instruction codes are ignored and are essentially implicit null operations.
 
@@ -37,18 +37,30 @@ the other at 0x0100. These test programs are taken from page 35 of the original
 [IMSAI 8080 user manual](http://dunfield.classiccmp.org/imsai/imsai.pdf).
 
 ```
-0000                        org  0000h    ; origin at 0000h
+0000                        org   0000h      ; origin at 0000h
 
-0000 DB FF      test1       in   ffh      ; read IO port ffh into register A
-0002 D3 FF                  out  ffh      ; write register A to IO port ffh
-0004 C3 00 00               jmp  test1    ; jump to address 0000h
+0000 DB FF      test1       in    ffh        ; read IO port ffh into register A
+0002 D3 FF                  out   ffh        ; write register A to IO port ffh
+0004 C3 00 00               jmp   test1      ; jump to address 0000h
 
-0100                        org 0100h     ; origin at 0100h
+0100                        org   0100h      ; origin at 0100h
 
-0100 DB FF      test2       in   ffh      ; read IO port ffh into register A
-0102 2F                     cma           ; invert the bits in register A
-0103 D3 FF                  out  ffh      ; write register A to IO port ffh
-0105 C3 00 00               jmp  test1    ; jump to address 0000h
+0100 DB FF      test2       in    ffh        ; read IO port ffh into register A
+0102 2F                     cma              ; invert the bits in register A
+0103 D3 FF                  out   ffh        ; write register A to IO port ffh
+0105 C3 00 00               jmp   test1      ; jump to address 0000h
+
+0200                        org   0200h      ; origin at 0200h
+
+0200 31 FF FF   test3       lxi   sp, ffffh  ; set the stack pointer to the end of memory
+0203 CD 00 03   loop3       call  sub1       ; call the subroutine
+0205 C3 03 02               jmp   loop3      ; jump to address 0202h
+
+0300                        org   0300h      ; origin at 0300h
+
+0300 00         sub1        nop              ; no nothing
+0301 00                     nop              ; do nothing, again
+0302 C9                     ret              ; return
 ```
 
 Running from address 0x0000 (e.g. reset) will run the first program. This program
