@@ -230,6 +230,22 @@ window.onload = function () {
 
 
 
+    //
+    // handle the power switch for now...
+    //
+    $($('.new-switch input[data-name=power][data-bit=0]')[0]).on ('change', function () {
+        let element = $(this);
+        let led = $($('.led[data-name=power][data-bit=0]')[0]);
+
+        if (element.is (':checked')) {
+            led.addClass ('on');
+        }
+        else {
+            led.removeClass ('on');
+        }
+    });
+
+
 
 
 

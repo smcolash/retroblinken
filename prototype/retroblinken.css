@@ -3,6 +3,154 @@ body {
     color: lightgray;
 }
 
+.label {
+    width: 1.5em;
+    height: 1.5em;
+    margin: 0.125em;
+    user-select: none;
+}
+
+.label .text {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.empty {
+    width: 1.5em;
+    height: 100%;
+    margin: 0.125em;
+}
+
+.vertical-bar {
+    width: 0pt;
+    height: 100%;
+    border: 1pt solid gray;
+    background-color: gray;
+    margin: 0 auto;
+}
+
+.round {
+    border-radius: 1em !important;
+}
+
+.square {
+    border-radius: 0em !important;
+}
+
+.rounded {
+    border-radius: 0.25em !important;
+}
+
+.led {
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 0.25em;
+    margin: 0.125em;
+    transition: opacity 0.1s ease-in-out;
+    background: radial-gradient(#ff6060, #cf1010);
+    opacity: 0.2;
+}
+
+.red {
+    background: radial-gradient(#ff6060, #cf1010);
+}
+
+.orange {
+    background: radial-gradient(#ff8000, #804000);
+}
+
+.green {
+    background: radial-gradient(#60ff60, #108f10);
+}
+
+.on {
+    opacity: 1.0 !important;
+}
+
+.bit {
+    display: inline-block;
+    margin: 0.125em;
+    _border: 1px solid red;
+}
+
+.new-switch {
+    display: block;
+    position: relative;
+    user-select: none;
+    display: inline-block;
+    width: 1.5em;
+    height: 2.5em;
+    border-radius: 0.25em;
+    background-color: gray;
+    margin: 0.125em;
+}
+
+.new-slider {
+    height:1em;
+    width: 1em;
+    border-radius: inherit;
+    background-color: #424242;
+    position: relative;
+    top: 1em;
+    margin: 0.25em;
+}
+
+.new-switch input {
+    cursor: pointer;
+    position: absolute;
+    opacity: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+}
+
+.new-switch input:checked ~ .new-slider {
+    top: 0em;
+}
+
+.new-tristate {
+    height: 3.5em;
+}
+
+.new-switch input.high {
+    height: 50%;
+    top: 0px;
+}
+
+.new-switch input.high:checked ~ .new-slider {
+    top: 0em;
+}
+
+.new-switch input.low {
+    height: 50%;
+    bottom: 0px;
+}
+
+.new-switch input.low:checked ~ .new-slider {
+    top: 2em;
+}
+
+/* ============================================== */
+
+
+
+/*
+
+
+
+
+
+
+body {
+    background-color: #212121;
+    color: lightgray;
+}
+
 .yikes {
     background-color: orange;
 }
@@ -148,3 +296,7 @@ body {
 .toggle input.low:checked ~ .switch .slider {
     top: 2.25em;
 }
+
+
+*/
+
