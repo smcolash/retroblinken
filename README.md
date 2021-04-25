@@ -17,30 +17,32 @@ Once initialized, two short test programs are written to memory, one at 0x0000 a
 the other at 0x0100. These test programs are taken from page 35 of the original
 [IMSAI 8080 user manual](http://dunfield.classiccmp.org/imsai/imsai.pdf).
 
+```
+0000                        org  0000h    ; origin at 0000h
+
+0000 DB FF      loop        in   ffh      ; read IO port 0xff into register A
+0002 D3 FF                  out  ffh      ; write register A to IO port 0xff
+0004 C3 00 00               jmp  loop     ; jump to address 0x0000
+
+0100                        org 0100h     ; origin at 0100h
+
+0100 DB FF                  in   ffh      ; read IO port 0xff into register A
+0102 2F                     cma           ; invert the bits in register A
+0103 D3 FF                  out  ffh      ; write register A to IO port 0xff 
+0105 C3 00 00               jmp  loop     ; jump to address 0x0000
+```
+
 Running from address 0x0000 (e.g. reset) will run the first program. This program
-executes a few simple instructions and then jumps back to address 0x0000.
+s an endless loop that executes a few simple instructions and then jumps back to
+address 0x0000.
 
-Steps:
-- power on
+- power on or reset
+- make sure the address switches are set to 0x0000 (all off)
 - R/S
-
-```
-0000 DB FF      IN   0xff     ; read IO port 0xff into register A
-0002 D3 FF      OUT  0xff     ; write register A to IO port 0xff
-0004 C3 00 00   JMP  0x0000   ; jump to address 0x0000
-```
 
 Running from address 0x0100 will run the second program, which will then jump 
-back to the first program.
+back to the first program at 0x0000.
 
-Steps:
-- power on
-- set address switch A8.
+- power on or reset
+- make sure the address switches are set to 0x0100 (all off except for A8)
 - R/S
-
-```
-0100 DB FF      IN   0xff     ; read IO port 0xff into register A
-0102 2F         CMA           ; invert the bits in register A
-0103 D3 FF      OUT  0xff     ; write register A to IO port 0xff 
-0105 C3 00 00   JMP  0x0000   ; jump to address 0x0000
-```
