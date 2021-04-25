@@ -366,6 +366,11 @@ window.onload = function () {
 
             control.enable (true);
             control.update ();
+
+            if (control.value & 2) {
+                running = true;
+                step ();
+            }
         }
     });
 
