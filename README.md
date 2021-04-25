@@ -20,16 +20,16 @@ the other at 0x0100. These test programs are taken from page 35 of the original
 ```
 0000                        org  0000h    ; origin at 0000h
 
-0000 DB FF      loop        in   ffh      ; read IO port 0xff into register A
+0000 DB FF      test1       in   ffh      ; read IO port 0xff into register A
 0002 D3 FF                  out  ffh      ; write register A to IO port 0xff
-0004 C3 00 00               jmp  loop     ; jump to address 0x0000
+0004 C3 00 00               jmp  test1    ; jump to address 0x0000
 
 0100                        org 0100h     ; origin at 0100h
 
-0100 DB FF                  in   ffh      ; read IO port 0xff into register A
+0100 DB FF      test2       in   ffh      ; read IO port 0xff into register A
 0102 2F                     cma           ; invert the bits in register A
 0103 D3 FF                  out  ffh      ; write register A to IO port 0xff 
-0105 C3 00 00               jmp  loop     ; jump to address 0x0000
+0105 C3 00 00               jmp  test1    ; jump to address 0x0000
 ```
 
 Running from address 0x0000 (e.g. reset) will run the first program. This program
