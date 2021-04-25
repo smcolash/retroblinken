@@ -262,41 +262,42 @@ window.onload = function () {
         ]
     });
 
-    function reboot () {
-        // fill the memory with chaotic but deterministic values
-        let seed = 8675309;
-        for (let loop = 0; loop < 2**16; loop++) {
-            seed = seed * 16807 % 2147483647;
-            memory[loop] = seed & 0xff;
-        }
+    //
+    // fill the memory with chaotic but deterministic values
+    //
+    let seed = 8675309;
+    for (let loop = 0; loop < 2**16; loop++) {
+        seed = seed * 16807 % 2147483647;
+        memory[loop] = seed & 0xff;
+    }
 
-        //
-        // add a small test program to page zero
-        //
-        memory[0x0000 + 0] = 0xdb;
-        memory[0x0000 + 1] = 0xff;
-        memory[0x0000 + 2] = 0xd3;
-        memory[0x0000 + 3] = 0xff;
-        memory[0x0000 + 4] = 0xc3;
-        memory[0x0000 + 5] = 0x00;
-        memory[0x0000 + 6] = 0x00;
+    //
+    // add a small test program to page zero
+    //
+    memory[0x0000 + 0] = 0xdb;
+    memory[0x0000 + 1] = 0xff;
+    memory[0x0000 + 2] = 0xd3;
+    memory[0x0000 + 3] = 0xff;
+    memory[0x0000 + 4] = 0xc3;
+    memory[0x0000 + 5] = 0x00;
+    memory[0x0000 + 6] = 0x00;
 
-        //
-        // add a small test program to page one
-        //
-        memory[0x0100 + 0] = 0xdb;
-        memory[0x0100 + 1] = 0xff;
-        memory[0x0100 + 2] = 0x2f;
-        memory[0x0100 + 3] = 0xd3;
-        memory[0x0100 + 4] = 0xff;
-        memory[0x0100 + 5] = 0xc3;
-        memory[0x0100 + 6] = 0x00;
-        memory[0x0100 + 7] = 0x00;
+    //
+    // add a small test program to page one
+    //
+    memory[0x0100 + 0] = 0xdb;
+    memory[0x0100 + 1] = 0xff;
+    memory[0x0100 + 2] = 0x2f;
+    memory[0x0100 + 3] = 0xd3;
+    memory[0x0100 + 4] = 0xff;
+    memory[0x0100 + 5] = 0xc3;
+    memory[0x0100 + 6] = 0x00;
+    memory[0x0100 + 7] = 0x00;
 
+    function reset () {
         //
         // reset the system
         //
-        running = false;
         address.enable (false);
         address.value = 0;
         data.enable (false);
@@ -306,7 +307,7 @@ window.onload = function () {
     //
     // execute the currently addressed instruction
     //
-    function execute (g, m) {
+    function step () {
         if (power.value == 0) {
             return;
         }
@@ -315,29 +316,29 @@ window.onload = function () {
             return;
         }
 
-        data.value = memory[address.value];
-        address.value++;
+        data.value = memory[address.value++];
 
         let opcode = data.value;
         if (opcode == 0xc3) {
-            let address = memory[address.value] +
+            let value = memory[address.value] +
                 memory[address.value + 1] * 256;
-            address.value = address;
+            address.value = value;
         }
 
-        let tick = 250;
+        let tick = 150;
         //tick = 50; // add turbo mode?
-        if ($('#run_stop').is (':checked')) {
+        //if ($($('.new-switch input[data-name=controls][data-bit=1]')[0]).is (':checked')) {
+        if (running) {
             setTimeout (function () {
-                execute (g, m);
+                step ();
             }, tick);
         }
     }
 
     //
-    // reboot the system
+    // reset the system
     //
-    reboot ();
+    reset ();
 
     //
     // handle a change to the power switch
@@ -359,31 +360,27 @@ window.onload = function () {
             running = false;
         }
         else {
-            reboot ();
+            reset ();
 
             power.value = 1;
             running = false;
-
-            data.value = memory[address.value];
 
             control.enable (true);
             control.update ();
         }
     });
 
-
-
     //
     // handle the change to run/stop
     //
-    $('#run_stop').on ('change', function () {
+    $($('.new-switch input[data-name=controls][data-bit=1]')[0]).on ('change', function () {
         let input = $(this);
         if (input.is (':checked')) {
             running = true;
             address.enable (true)
             address.update ();
             address.enable (false)
-            execute (global, memory);
+            step ();
         }
         else {
             running = false;
@@ -393,25 +390,28 @@ window.onload = function () {
     //
     // handle a request to step one address
     //
-    $('#single_step').on ('change', function () {
+    $($('.new-switch input[data-name=controls][data-bit=0]')[0]).on ('change', function () {
         if (power.value == 0) {
+            return;
+        }
+
+        if (running) {
             return;
         }
 
         let input = $(this);
         if (input.is (':checked')) {
             running = true;
-            execute (global, memory);
-        }
-        else {
+            step ();
             running = false;
         }
+
     });
 
     //
     // handle a change to the reset signal
     //
-    $('#reset').on ('change', function () {
+    $($('.new-switch input[data-name=controls][data-bit=2]')[0]).on ('change', function () {
         if (power.value == 0) {
             return;
         }
@@ -422,19 +422,91 @@ window.onload = function () {
         }
     });
 
+    //
+    // handle a request to examine and step one address
+    //
+    $($('.new-switch input.high[data-name=controls][data-bit=4]')[0]).on ('change', function () {
+        if (power.value == 0) {
+            return;
+        }
 
+        if (running) {
+            return;
+        }
 
+        let input = $(this);
+        if (input.is (':checked')) {
+            address.enable (true);
+            address.update ();
+            address.enable (false);
+            data.value = memory[address.value];
+        }
+    });
 
+    //
+    // handle a request to step one address
+    //
+    $($('.new-switch input.low[data-name=controls][data-bit=4]')[0]).on ('change', function () {
+        if (power.value == 0) {
+            return;
+        }
 
+        if (running) {
+            return;
+        }
 
+        let input = $(this);
+        if (input.is (':checked')) {
+            address.value++;
+            data.value = memory[address.value];
+        }
+    });
 
+    //
+    // handle a request to modify and step one address
+    //
+    $($('.new-switch input.high[data-name=controls][data-bit=3]')[0]).on ('change', function () {
+        if (power.value == 0) {
+            return;
+        }
 
+        if (running) {
+            return;
+        }
 
+        let input = $(this);
+        if (input.is (':checked')) {
+            address.update ();
 
+            data.enable (true)
+            data.update ()
+            data.enable (false)
 
+            memory[address.value] = data.value;
+        }
+    });
 
+    //
+    // handle a request to step one address
+    //
+    $($('.new-switch input.low[data-name=controls][data-bit=3]')[0]).on ('change', function () {
+        if (power.value == 0) {
+            return;
+        }
 
+        if (running) {
+            return;
+        }
 
+        let input = $(this);
+        if (input.is (':checked')) {
+            data.enable (true)
+            data.update ()
+            data.enable (false)
+
+            memory[address.value++] = data.value;
+        }
+    });
 
     //
     // disable the context menu
@@ -442,122 +514,4 @@ window.onload = function () {
     $(document).on ('contextmenu', function () {
         return (false);
     });
-
-    return;
-
-
-
-
-
-
-
-    //
-    // perform an initial reboot
-    //
-    reboot ();
-
-    //
-    // handle a request to examine and step one address
-    //
-    $('#examine_next_up').on ('change', function () {
-        if (global['power'].value == 0) {
-            return;
-        }
-
-        if (running) {
-            return;
-        }
-
-        let input = $(this);
-        if (input.is (':checked')) {
-            global['address'].enable (true);
-            global['address'].update ();
-            global['address'].enable (false);
-            global['data'].value = memory[global['address'].value];
-        }
-    });
-
-    //
-    // handle a request to step one address
-    //
-    $('#examine_next_down').on ('change', function () {
-        if (global['power'].value == 0) {
-            return;
-        }
-
-        if (running) {
-            return;
-        }
-
-        let input = $(this);
-        if (input.is (':checked')) {
-            global['address'].value++;
-            global['data'].value = memory[global['address'].value];
-        }
-    });
-
-    //
-    // handle a request to modify and step one address
-    //
-    $('#deposit_next_up').on ('change', function () {
-        // FIXME
-        if (global['power'].value == 0) {
-            return;
-        }
-
-        if (running) {
-            return;
-        }
-
-        let input = $(this);
-        if (input.is (':checked')) {
-            global['address'].update ();
-
-            global['data'].enable (true)
-            global['data'].update ()
-            global['data'].enable (false)
-
-            memory[global['address'].value] = global['data'].value;
-            //global['address'].value++;
-        }
-    });
-
-    //
-    // handle a request to step one address
-    //
-    $('#deposit_next_down').on ('change', function () {
-        // FIXME
-        if (global['power'].value == 0) {
-            return;
-        }
-
-        if (running) {
-            return;
-        }
-
-        let input = $(this);
-        if (input.is (':checked')) {
-
-            global['data'].enable (true)
-            global['data'].update ()
-            global['data'].enable (false)
-
-
-            memory[global['address'].value] = global['data'].value;
-            global['address'].value++;
-        }
-    });
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
