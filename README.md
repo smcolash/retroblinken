@@ -39,8 +39,8 @@ Steps:
 - R/S
 
 ```
-0010 DB FF      IN   0xff     ; read IO port 0xff into register A
-0012 2F         CMA           ; invert the bits in register A
-0013 D3 FF      OUT  0xff     ; write register A to IO port 0xff 
-0015 C3 00 00   JMP  0x0000   ; jump to address 0x0000
+0100 DB FF      IN   0xff     ; read IO port 0xff into register A
+0102 2F         CMA           ; invert the bits in register A
+0103 D3 FF      OUT  0xff     ; write register A to IO port 0xff 
+0105 C3 00 00   JMP  0x0000   ; jump to address 0x0000
 ```
