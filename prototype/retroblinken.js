@@ -1,9 +1,13 @@
 class PanelControl {
-    constructor (name, enabled, value, mask) {
-        this._name = name;
-        this._enabled = enabled;
-        this._value = value;
-        this._mask = mask;
+    constructor (config) {
+        this._config = config;
+
+        this._name = this._config.name;
+        this._enabled = this._config.enabled;
+        this._value = this._config.value;
+        this._mask = this._config.mask;
+
+        this.create_control (this._config.selector, this._config);
     }
 
     //
@@ -82,77 +86,87 @@ class PanelControl {
 
         self.value = temp;
     }
-}
 
-function create_control (selector, config) {
-    let element = $(selector);
-    let bus = config.name;
-    let color = config.color;
+    create_control () {
+        let element = $(this._config.selector);
+        let bus = this._config.name;
+        let color = this._config.color;
 
-    for (let loop in config.bits) {
-        let item = config.bits[loop];
-        let bit = item.bit;
-        let name = item.name;
+        for (let loop in this._config.bits) {
+            let item = this._config.bits[loop];
+            let bit = item.bit;
+            let name = item.name;
 
-        let tristate = false;
-        if ('tristate' in item) {
-            tristate = item.tristate;
-        }
-
-        let momentary = false;
-        if ('momentary' in item) {
-            momentary = item.momentary;
-        }
-
-        let outer = $("<div id='" + name + "' class='bit'>");
-        element.append (outer);
-
-        let label = $("<div class='label'><div class='text'>" + name + "</div></div>");
-        outer.append (label);
-
-        let led = $("<div data-bit=" + bit + " data-name='" + bus + "' class='led " + color + "'></div>");
-        outer.append (led);
-
-        let toggle = $("<div class='new-switch'>");
-        outer.append (toggle);
-
-        if (tristate) {
-            toggle.addClass ('new-tristate');
-
-            let high = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
-            high.addClass ('high');
-            toggle.append (high);
-
-            if (momentary) {
-                high.addClass ('momentary');
+            let tristate = false;
+            if ('tristate' in item) {
+                tristate = item.tristate;
             }
 
-            let low = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
-            low.addClass ('low');
-            toggle.append (low);
-
-            if (momentary) {
-                low.addClass ('momentary');
+            let momentary = false;
+            if ('momentary' in item) {
+                momentary = item.momentary;
             }
-        }
-        else {
-            let input = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
-            toggle.append (input);
-            if (momentary) {
-                input.addClass ('momentary');
-            }
-        }
 
-        let slider = $("<div class='new-slider'></div>");
-        toggle.append (slider);
+            let outer = $("<div id='" + name + "' class='bit'>");
+            element.append (outer);
+
+            let label = $("<div class='label'><div class='text'>" + name + "</div></div>");
+            outer.append (label);
+
+            let led = $("<div data-bit=" + bit + " data-name='" + bus + "' class='led " + color + "'></div>");
+            outer.append (led);
+
+            let toggle = $("<div class='new-switch'>");
+            outer.append (toggle);
+
+            if (tristate) {
+                toggle.addClass ('new-tristate');
+
+                let high = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
+                high.addClass ('high');
+                toggle.append (high);
+
+                if (momentary) {
+                    high.addClass ('momentary');
+                }
+
+                let low = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
+                low.addClass ('low');
+                toggle.append (low);
+
+                if (momentary) {
+                    low.addClass ('momentary');
+                }
+            }
+            else {
+                let input = $("<input type='checkbox' data-bit=" + bit + " data-name='" + bus + "'>");
+                toggle.append (input);
+                if (momentary) {
+                    input.addClass ('momentary');
+                }
+            }
+
+            let slider = $("<div class='new-slider'></div>");
+            toggle.append (slider);
+        }
     }
 }
 
 window.onload = function () {
     //
+    // create global system registers
+    //
+    var running = false;
+    var global = {};
+
+    //
     // define the address bus LEDs and switches
     //
-    let address = {
+    global['address'] = new PanelControl ({
+        'selector': '#address_controls',
+        'value': 0,
+        'mask': 0xffff,
+        'enabled': false,
         'name': 'address',
         'color': 'green',
         'bits': [
@@ -173,12 +187,16 @@ window.onload = function () {
             {'name': 'A1', 'bit': 1},
             {'name': 'A0', 'bit': 0}
         ]
-    };
+    });
 
     //
     // define the data bus LEDs and switches
     //
-    let data = {
+    global['data'] = new PanelControl ({
+        'selector': '#data_controls',
+        'value': 0,
+        'mask': 0xff,
+        'enabled': false,
         'name': 'data',
         'color': 'orange',
         'bits': [
@@ -191,12 +209,16 @@ window.onload = function () {
             {'name': 'D1', 'bit': 1},
             {'name': 'D0', 'bit': 0}
         ]
-    };
+    });
 
     //
     // define the control LEDs and switches
     //
-    let controls = {
+    global['control'] = new PanelControl ({
+        'selector': '#operating_controls',
+        'value': 0,
+        'mask': 0xff,
+        'enabled': false,
         'name': 'controls',
         'color': 'red',
         'bits': [
@@ -206,26 +228,23 @@ window.onload = function () {
             {'name': 'R/S', 'bit': 1},
             {'name': 'SS', 'bit': 0, 'momentary': true}
         ]
-    };
+    });
 
     //
     // define the power LED and switch
     //
-    let power = {
+    global['power'] = new PanelControl ({
+        'selector': '#power_controls',
+        'value': 0,
+        'mask': 0xff,
+        'enabled': false,
         'name': 'power',
         'color': 'red',
         'bits': [
             {'name': 'PWR', 'bit': 0}
         ]
-    };
+    });
 
-    //
-    // create the LEDs and switches
-    //
-    create_control ('#address_controls', address);
-    create_control ('#data_controls', data);
-    create_control ('#operating_controls', controls);
-    create_control ('#power_controls', power);
 
 
 
@@ -274,21 +293,27 @@ window.onload = function () {
         });
     });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+setInterval (function () {
+    global['address'].value++;
+}, 250);
+
+
+
+
     return;
-
-
-
-
-
-    //
-    // create global system registers
-    //
-    var running = false;
-    var global = {};
-    global['address'] = new PanelControl ('address', false, 0x0000, 0xffff);
-    global['data'] = new PanelControl ('data', false, 0x00, 0xff);
-    global['control'] = new PanelControl ('control', false, 0x00, 0xff);
-    global['power'] = new PanelControl ('power', true, 0, 1);
 
     //
     // initialize the system memory
@@ -576,49 +601,9 @@ if (false) {
 
 }
 
-    //
-    // dispatch switch events to the appropriate handlers
-    //
-    $('.bit .toggle input').on ('change', function () {
-        return;
-        let input = $(this);
-        let name = input.data ()['name'];
-        global[name].update ();
-
-        if (!$('body').hasClass ('yikes')) {
-            $('body').addClass ('yikes');
-            setTimeout (function () {
-                $('body').removeClass ('yikes');
-            }, 100);
-        }
-    });
 
 
-/*
- * Notes:
- * 1) the checkboxes and events are behaving properly.
- * 2) EVERYTHING is working right except on my iPhone.
- * 3) the first switch always withs correctly in all ways.
- * 4) The non-first switches fail to show the toggling behavior.
- * 5) the initial toggle behavior was via CSS selectors and styles.
- * 6) added hack to respond to change and force add/remove of styles, DID NOT WORK.
- * 7) seems the same problem for selector adn event handling.
- * 8) perhaps the page structuring is confusing the selector, but ONLY on the iPhone?
- * 9) inserted code to use the selector and report the count, it worked fine.
- * 10) ...and this used ot work fine.
- */
 
-
-    $('.toggle input').on ('change', function () {
-        let input = $(this);
-
-        if (input.is (':checked')) {
-            input.addClass ('megahack-on');
-        }
-        else {
-            input.removeClass ('megahack-on');
-        }
-    });
 
 
 
