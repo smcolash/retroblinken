@@ -26,13 +26,13 @@ Steps:
 - R/S
 
 ```
-0000 DB FF
-0002 D3 FF
-0004 C3 00 00
+0000 DB FF      IN   0xff     ; read IO address 0xff into register A
+0002 D3 FF      OUT  0xff     ; write register A to IO address 0xff
+0004 C3 00 00   JMP  0x0000   ; jump to address 0x0000
 ```
 
-Running from address 0x0100 will run the second program, which will jump back to
-the first program.
+Running from address 0x0100 will run the second program, which will then jump 
+back to the first program.
 
 Steps:
 - power on
@@ -40,8 +40,8 @@ Steps:
 - R/S
 
 ```
-0010 DB FF
-0012 2F
-0013 D3 FF
-0015 C3 00 00
+0010 DB FF      IN   0xff     ; read IO address 0xff into register A
+0012 2F         CMA           ; invert the bits in register A
+0013 D3 FF      OUT  0xff     ; write register A to IO address 0xff 
+0015 C3 00 00   JMP  0x0000   ; jump to address 0x0000
 ```
